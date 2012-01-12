@@ -18,7 +18,6 @@ ADD_DEFINITIONS(-D_ENABLE_DEBUG=1)
 ###############################################################################
 # add a target
 ###############################################################################
-add_executable(vtk src/vtk.cpp)
 add_executable(test src/test.cpp)
 target_link_libraries(test ${ISIS_LIB} ${ISIS_LIB_DEPENDS} ${VTK_LIBRARIES})
-target_link_libraries(vtk ${VTK_LIBRARIES})
+
