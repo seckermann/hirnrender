@@ -19,5 +19,8 @@ ADD_DEFINITIONS(-D_ENABLE_DEBUG=1)
 # add a target
 ###############################################################################
 add_executable(test src/test.cpp)
+add_library(getImageData SHARED src/getImageData.cpp)
 target_link_libraries(test ${ISIS_LIB} ${ISIS_LIB_DEPENDS} ${VTK_LIBRARIES})
+target_link_libraries(getImageData ${ISIS_LIB} ${ISIS_LIB_DEPENDS} ${VTK_LIBRARIES})
+
 
