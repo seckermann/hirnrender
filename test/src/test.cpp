@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
   colorFun->AddRGBPoint(	300, .8,.8,.8);
   colorFun->AddRGBPoint(	 0, 0, 0, 0);
 
- opacityFun = vtkPiecewiseFunction::New();
+  opacityFun = vtkPiecewiseFunction::New();
   propertyBrain->SetScalarOpacity( opacityFun );
   opacityFun->AddPoint(0,0.00);
   opacityFun->AddPoint(90,1);	
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
   mapper->SetCroppingRegionPlanes(bounds[0],(bounds[1]-bounds[0])/2 + bounds[0], bounds[2],bounds[3],bounds[4],bounds[5]);
   mapper->CroppingOn();
 
-/*bild2***************************/
+/*bild2**************************/
   id = ids.back();
   volume = vtkVolume::New();
 
@@ -168,7 +168,7 @@ vtkImageData* getImageData(data::Image image){
   const util::fvector4 spacing = image.getPropertyAs<util::fvector4>( "voxelSize" );
   id->SetSpacing(spacing[0],spacing[1],spacing[2]);
   const util::fvector4 origin = image.getPropertyAs<util::fvector4>( "indexOrigin" );
-  id->SetOrigin(origin[0]-spacing[0]/2,origin[1]-spacing[0]/2,origin[2]-spacing[0]/2);
+  id->SetOrigin(origin[0]+spacing[0]/2.0,origin[1]-spacing[1]/2.0,origin[2]-spacing[2]/2.0);
 
   for (int z=0; z<dims[2]; z++){
     for (int y=0; y<dims[1]; y++){
