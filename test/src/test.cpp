@@ -78,7 +78,7 @@ void renderImage(char* image, char *activity){
     for (std::list<data::Image>::const_iterator activity = activities.begin(); activity != activities.end(); ++activity){
       ids.push_back(getImageData(*activity));
     }
-    vtkImageData* ad = ads.front();
+    vtkImageData* ad = ads.back();
   }
 
 
