@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-#include <DataStorage/io_application.hpp>
+#include <DataStorage/io_factory.hpp>
 #include "DataStorage/image.hpp"
 
 #include "CoreUtils/log.hpp"
@@ -23,25 +23,63 @@
 using namespace isis;
 
 vtkImageData* getImageData(data::Image image);
+void renderImage(char* image, char *activity);
 
 
 
 
 int main(int argc, char **argv) {
+  char * image = NULL;
+  char * activity = NULL;
+  switch(argc){
+    case 3:
+      if (strcmp(argv[1],"-in")==0){
+        printf("hier1\n");
+        image= argv[2];
+        activity = NULL;
+      }else{
+        perror("Wrong parameters");
+        exit(-1);
+      }
+      break;
+    case 5:
+      if (strcmp(argv[1],"-in")==0 && strcmp(argv[3],"-z")==0){
+        printf("hier2\n");
+        image= argv[2];
+        activity = argv[4];
+      }else{
+        if (strcmp(argv[1],"-z")==0 && strcmp(argv[3],"-in")==0){
+          printf("hier3\n");
+          activity = argv[2];
+          image= argv[4];
+        }else{
+          perror("Wrong parameters");
+          exit(-1);
+        }
+      }
+      break;
+  }
+  renderImage(image, activity); 
 
-  data::IOApplication app( "vtkadapter", true, false );
-  app.init( argc, argv, true); // if there is a problem, we just get no images and exit cleanly
-  // get the first image from the loaded input data
-  std::list<data::Image> images = app.images;
+}
 
 
+void renderImage(char* image, char *activity){
+  std::list<data::Image> images = data::IOFactory::load(image);
   std::list<vtkImageData*> ids;
-
   for (std::list<data::Image>::const_iterator image = images.begin(); image != images.end(); ++image){
     ids.push_back(getImageData(*image));
   }
+  vtkImageData* id = ids.front();
 
-
+  if(activity!= NULL){
+    std::list<data::Image> activities = data::IOFactory::load(activity);
+    std::list<vtkImageData*> ads;
+    for (std::list<data::Image>::const_iterator activity = activities.begin(); activity != activities.end(); ++activity){
+      ids.push_back(getImageData(*activity));
+    }
+    vtkImageData* ad = ads.front();
+  }
 
 
   vtkRenderer* renderer = vtkRenderer::New();
@@ -49,10 +87,10 @@ int main(int argc, char **argv) {
   vtkSmartVolumeMapper* mapper;
   vtkColorTransferFunction* colorFun;  
   vtkPiecewiseFunction* opacityFun;
-  
-//bild 1
-  vtkImageData* id = ids.front();
+
   vtkVolume * volume = vtkVolume::New();
+  double* bounds;
+  //bild 1
 
   mapper = vtkSmartVolumeMapper::New();
   mapper->SetInput(id);
@@ -71,6 +109,8 @@ int main(int argc, char **argv) {
   propertyBrain->SetScalarOpacity( opacityFun );
   opacityFun->AddPoint(0,0.00);
   opacityFun->AddPoint(90,1);	
+
+
   propertyBrain->SetIndependentComponents(true);
 
   propertyBrain->SetInterpolationTypeToLinear();
@@ -79,50 +119,75 @@ int main(int argc, char **argv) {
   volume->SetProperty( propertyBrain );
   volume->SetMapper(mapper);
   renderer->AddVolume(volume);
-  double* bounds = volume->GetBounds();
+  bounds = volume->GetBounds();
   for(int i= 0 ; i<6 ; i++ ){
-  printf("%f\n ", bounds[i]);
+    printf("%f\n ", bounds[i]);
   }
   mapper->SetCroppingRegionPlanes(bounds[0],(bounds[1]-bounds[0])/2 + bounds[0], bounds[2],bounds[3],bounds[4],bounds[5]);
-  mapper->CroppingOn();
+  //mapper->CroppingOn();
 
-/*bild2**************************/
-  id = ids.back();
-  volume = vtkVolume::New();
+  //Activity
+  if(activity!=NULL){
+    id = ids.back();
 
-  mapper = vtkSmartVolumeMapper::New();
-  mapper->SetInput(id);
-  propertyBrain = vtkVolumeProperty::New();
+    double max = -100;
+    double min = +100;
+    for (int z=0; z<id->GetDimensions()[2]; z++){
+      for (int y=0; y<id->GetDimensions()[1]; y++){
+        for (int x=0; x<id->GetDimensions()[0]; x++){
+          double temp = id->GetScalarComponentAsDouble(x,y,z,0);
+          if(temp > max){
+            max = temp;
+          }
+          if(temp < min){
+            min = temp;
+          }
+        }
+      }
+    }
+    printf("%f, %f\n", min, max);
+    volume = vtkVolume::New();
 
-  colorFun =vtkColorTransferFunction::New();
-  propertyBrain->SetColor( colorFun );
-  colorFun->AddRGBPoint(	 0, .0, .0, .0);
-  colorFun->AddRGBPoint(	 4, 1,.0 ,.0 );
-  colorFun->AddRGBPoint(	 -4, 0, 0, 1);
+    mapper = vtkSmartVolumeMapper::New();
+    mapper->SetInput(id);
+    propertyBrain = vtkVolumeProperty::New();
 
-  opacityFun = vtkPiecewiseFunction::New();
-  propertyBrain->SetScalarOpacity( opacityFun );
-  opacityFun->AddPoint(0,0.00);
-  opacityFun->AddPoint(0.1,1);	
-  propertyBrain->SetIndependentComponents(true);
+    colorFun =vtkColorTransferFunction::New();
+    propertyBrain->SetColor( colorFun );
+    colorFun->AddRGBPoint(	 -4,   0,   0, 0.2);
+    colorFun->AddRGBPoint(	 -0.2, 0,   0, 1  );
+    colorFun->AddRGBPoint(	  0,   0,   0, 0  );
+    colorFun->AddRGBPoint(	  0.2, 1,   0, 0  );
+    colorFun->AddRGBPoint(	  4,   0.2, 0, 0  );
 
-  propertyBrain->SetInterpolationTypeToLinear();
-  //propertyBrain->SetInterpolationTypeToNearest();
-  //mapper->SetInterpolationModeToCubic();
-  volume->SetProperty( propertyBrain );
-  volume->SetMapper(mapper);
-  renderer->AddVolume(volume);
+    opacityFun = vtkPiecewiseFunction::New();
+    propertyBrain->SetScalarOpacity( opacityFun );
 
-  bounds = volume->GetBounds();
-  
-  mapper->SetCroppingRegionPlanes(bounds[0],(bounds[1]-bounds[0])/2 + bounds[0], bounds[2],bounds[3],bounds[4],bounds[5]);
-  mapper->CroppingOn();
+    opacityFun->AddPoint(-4,   1);	
+    opacityFun->AddPoint(-0.2, 1);	
+    opacityFun->AddPoint(-0.1, 0);
+    opacityFun->AddPoint( 0,   0);
+    opacityFun->AddPoint( 0.1, 0);
+    opacityFun->AddPoint( 0.2, 1);	
+    opacityFun->AddPoint( 4, 1);	
+    propertyBrain->SetIndependentComponents(true);
+
+    propertyBrain->SetInterpolationTypeToLinear();
+    //propertyBrain->SetInterpolationTypeToNearest();
+    //mapper->SetInterpolationModeToCubic();
+    volume->SetProperty( propertyBrain );
+    volume->SetMapper(mapper);
+    renderer->AddVolume(volume);
+
+    bounds = volume->GetBounds();
+
+    mapper->SetCroppingRegionPlanes(bounds[0],(bounds[1]-bounds[0])/2 + bounds[0], bounds[2],bounds[3],bounds[4],bounds[5]);
+   // mapper->CroppingOn();
 
 
 
 
-/**************************/
-
+  }
 
 
 
@@ -144,10 +209,8 @@ int main(int argc, char **argv) {
   iren->Start(); 
 
 
+
 }
-
-
-
 
 
 vtkImageData* getImageData(data::Image image){
@@ -168,7 +231,7 @@ vtkImageData* getImageData(data::Image image){
   const util::fvector4 spacing = image.getPropertyAs<util::fvector4>( "voxelSize" );
   id->SetSpacing(spacing[0],spacing[1],spacing[2]);
   const util::fvector4 origin = image.getPropertyAs<util::fvector4>( "indexOrigin" );
-  id->SetOrigin(origin[0]+spacing[0]/2.0,origin[1]-spacing[1]/2.0,origin[2]-spacing[2]/2.0);
+  id->SetOrigin(origin[0]+spacing[0]/2.0,origin[1]+spacing[1]/2.0,origin[2]+spacing[2]/2.0);
 
   for (int z=0; z<dims[2]; z++){
     for (int y=0; y<dims[1]; y++){
