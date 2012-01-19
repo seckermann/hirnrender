@@ -1,0 +1,11 @@
+[global]
+verbose = 1
+force = 1
+
+[build]
+
+
+[install]
+
+install-base=$HOME/python
+
