@@ -117,7 +117,6 @@ void renderImage(char* image, char *activity){
   opacityFun->AddPoint(0,0.00);
   opacityFun->AddPoint(90,1);	
 
-
   propertyBrain->SetIndependentComponents(true);
 
   propertyBrain->SetInterpolationTypeToLinear();
@@ -133,7 +132,7 @@ void renderImage(char* image, char *activity){
   cropping[4] = bounds[4];
   cropping[5] = bounds[5];
   mapper->SetCroppingRegionPlanes(cropping[0],cropping[1], cropping[2],cropping[3],cropping[4],cropping[5]);
-  mapper->CroppingOn();
+//  mapper->CroppingOn();
 
   //Activity
   if(activity!=NULL){
@@ -187,7 +186,7 @@ void renderImage(char* image, char *activity){
     bounds = volume->GetBounds();
 
     mapper->SetCroppingRegionPlanes(cropping[0],cropping[1], cropping[2],cropping[3],cropping[4],cropping[5]);
-    mapper->CroppingOn();
+  //  mapper->CroppingOn();
 
 
 
@@ -236,8 +235,9 @@ vtkImageData* getImageData(data::Image image){
   const util::fvector4 spacing = image.getPropertyAs<util::fvector4>( "voxelSize" );
   id->SetSpacing(spacing[0],spacing[1],spacing[2]);
   const util::fvector4 origin = image.getPropertyAs<util::fvector4>( "indexOrigin" );
-  id->SetOrigin(origin[0]-spacing[0]/2.0,origin[1]-spacing[1]/2.0,origin[2]-spacing[2]/2.0);
+  id->SetOrigin(origin[0]/*-spacing[0]/2.0*/,origin[1]/*-spacing[1]/2.0*/,origin[2]/*-spacing[2]/2.0*/);
 
+  id->SetOrigin(origin[0]-spacing[0]/2.0,origin[1]-spacing[1]/2.0,origin[2]-spacing[2]/2.0);
   for (int z=0; z<dims[2]; z++){
     for (int y=0; y<dims[1]; y++){
       for (int x=0; x<dims[0]; x++){
