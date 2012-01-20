@@ -117,7 +117,7 @@ void renderImage(char* image, char *activity){
   opacityFun->AddPoint(0,0.00);
   opacityFun->AddPoint(90,1);	
 
-  propertyBrain->SetIndependentComponents(true);
+  //propertyBrain->SetIndependentComponents(true);
 
   propertyBrain->SetInterpolationTypeToLinear();
   volume->SetProperty( propertyBrain );
@@ -176,7 +176,7 @@ void renderImage(char* image, char *activity){
     opacityFun->AddPoint( 0.1, 0);
     opacityFun->AddPoint( 0.2, 1);	
     opacityFun->AddPoint( 4, 1);	
-    propertyBrain->SetIndependentComponents(true);
+    //propertyBrain->SetIndependentComponents(true);
 
     propertyBrain->SetInterpolationTypeToLinear();
     volume->SetProperty( propertyBrain );
