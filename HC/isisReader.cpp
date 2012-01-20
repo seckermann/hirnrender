@@ -1,8 +1,34 @@
+#include <Python.h>
 #include <vtkImageData.h>
 #include <DataStorage/io_application.hpp>
 #include <DataStorage/image.hpp>
 
 using namespace isis;
+
+static PyObject *isisReader_getImageData(PyObject *self, PyObject *args);
+static vtkImageData *getImageData(data::Image image);
+
+static PyMethodDef IsisReaderMethods[] = 	{
+	{"getImageData", isisReader_getImageData,METH_VARARGS,	"Simple parser for Vista Images for use with the VTK toolkit"},
+	{NULL, NULL, 0, NULL}
+};
+
+PyMODINIT_FUNC initisisReader(void){
+	Py_InitModule("isisReader", IsisReaderMethods);
+}
+
+static PyObject *isisReader_getImageData(PyObject *self, PyObject *args){
+	PyObject *vtkImage;
+
+	/*if(!PyArg_ParseTuple(args, "si", &text, &cipher))
+		return NULL;*/
+
+	
+	if(!PyArg_ParseTuple(args, "O", &vtkImage))
+		return NULL;
+	
+	return vtkImage;
+}
 
 vtkImageData* getImageData(data::Image image){
   vtkImageData* id;
@@ -10,6 +36,7 @@ vtkImageData* getImageData(data::Image image){
   int size;
   double* mem;
   int counter=0;
+
   dims[0]=image.getNrOfColumns();
   dims[1]=image.getNrOfRows();
   dims[2]=image.getNrOfSlices();
@@ -34,4 +61,5 @@ vtkImageData* getImageData(data::Image image){
   }
   return id;
 }
+
 

@@ -9,7 +9,7 @@ opacityWindow = 4096
 
 #DICOM image Reader
 dicomReader = vtk.vtkDICOMImageReader()
-dicomReader.SetDirectoryName("../data/S3")
+dicomReader.SetDirectoryName("data/S3")
 dicomReader.Update()
 inputBrain = dicomReader.GetOutput()
 reader = dicomReader
