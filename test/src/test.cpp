@@ -55,6 +55,11 @@ int main(int argc, char **argv) {
         }
       }
       break;
+    default:
+      perror("Wrong parameters");
+      exit(-1);
+      break;
+
   }
   renderImage(image, activity); 
 
@@ -181,8 +186,8 @@ void renderImage(char* image, char *activity){
 
     bounds = volume->GetBounds();
 
-  mapper->SetCroppingRegionPlanes(cropping[0],cropping[1], cropping[2],cropping[3],cropping[4],cropping[5]);
-     mapper->CroppingOn();
+    mapper->SetCroppingRegionPlanes(cropping[0],cropping[1], cropping[2],cropping[3],cropping[4],cropping[5]);
+    mapper->CroppingOn();
 
 
 
