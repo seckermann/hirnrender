@@ -14,6 +14,32 @@
 #include <DataStorage/io_factory.hpp>
 #include "DataStorage/image.hpp"
 
+
+//slider?
+#include <vtkSphereSource.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
+#include <vtkSliderWidget.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkActor.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
+#include <vtkCommand.h>
+#include <vtkWidgetEvent.h>
+#include <vtkCallbackCommand.h>
+#include <vtkWidgetEventTranslator.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkSliderWidget.h>
+#include <vtkSliderRepresentation3D.h>
+#include <vtkProperty.h>
+
+ 
+
+
 using namespace isis;
 
 vtkImageAppendComponents* getAppendComponents(vtkImageData* image, data::Image activity);
@@ -164,16 +190,36 @@ void renderImage(char* image, char *activity){
   vtkRenderWindow* renWin = vtkRenderWindow::New();
   renWin->AddRenderer(renderer);
   renWin->SetSize(800, 600);
-
+  
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   iren->SetRenderWindow(renWin);
 
   vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
   iren->SetInteractorStyle(style);
 
+
+
+
+
+
+
+
+
+
+
+
   iren->Initialize();
   iren->Start(); 
 
+//  opacityFun1 = vtkPiecewiseFunction::New();
+  opacityFun1->RemovePoint(90);	
+ // propertyBrain->SetScalarOpacity(0, opacityFun1 );
+
+
+
+  volume->Update();
+  renWin->WindowRemap();
+  iren->ReInitialize();
 
 
 }
