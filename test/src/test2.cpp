@@ -3,7 +3,6 @@
 #include "vtkImageData.h"
 #include "vtkVolumeProperty.h"
 #include "vtkRenderer.h"
-#include "vtkOpenGLRenderer.h"
 #include "vtkSmartVolumeMapper.h"
 #include <vtkFixedPointVolumeRayCastMapper.h>
 #include "vtkRenderWindow.h"
@@ -25,6 +24,7 @@
 using namespace isis;
 
 vtkImageData* getImageData(data::Image image);
+vtkImageData* getActivationData(data::Image activity, vtkImageData* image);
 void renderImage(char* image, char *activity);
 
 
@@ -84,16 +84,12 @@ void renderImage(char* image, char *activity){
   //Activity
   if(activity!= NULL){
     std::list<data::Image> activities = data::IOFactory::load(activity);
-    for (std::list<data::Image>::const_iterator activity = activities.begin(); activity != activities.end(); ++activity){
-      ads.push_back(getImageData(*activity));
-    }
-    ad = ads.front();
+
+  /*id =*/ getActivationData(activities.front(),  id);
   }
 
 
-
-  vtkRenderer* renderer1 = vtkOpenGLRenderer::New();
-//  vtkRenderer* renderer2 = vtkOpenGLRenderer::New();
+  vtkRenderer* renderer = vtkRenderer::New();
   vtkVolumeProperty *propertyBrain;
   vtkFixedPointVolumeRayCastMapper* mapper;
   vtkColorTransferFunction* colorFun;  
@@ -105,11 +101,12 @@ void renderImage(char* image, char *activity){
 
   mapper = vtkFixedPointVolumeRayCastMapper::New();
   mapper->SetInput(id);
- 
+//  mapper->IntermixIntersectingGeometryOn ();i
+//
   propertyBrain = vtkVolumeProperty::New();
 
   colorFun =vtkColorTransferFunction::New();
-  //propertyBrain->SetColor( colorFun );
+  propertyBrain->SetColor( colorFun );
   colorFun->AddRGBPoint(	 10, .0, .0, .0);
   colorFun->AddRGBPoint(	 50, .2, .2, .2);
   colorFun->AddRGBPoint(	 100, .4, .4, .4);
@@ -120,21 +117,16 @@ void renderImage(char* image, char *activity){
   opacityFun = vtkPiecewiseFunction::New();
   propertyBrain->SetScalarOpacity( opacityFun );
   opacityFun->AddPoint(0,0.00);
-<<<<<<< HEAD
   opacityFun->AddPoint(90,1);	
-  
-  propertyBrain->DisableGradientOpacityOn();
-  //propertyBrain->SetIndependentComponents(true);
-=======
-  opacityFun->AddPoint(20,0);	
-  opacityFun->AddPoint(21,1);	
 
-  propertyBrain->SetIndependentComponents(true);
->>>>>>> 63415d03728a2e6c8f6404d8e747f1b6f703ee8e
+  //propertyBrain->SetIndependentComponents(true);
 
   propertyBrain->SetInterpolationTypeToLinear();
-  bounds = volume->GetBounds();
-  double* cropping = new double[6];
+  volume->SetProperty( propertyBrain );
+  volume->SetMapper(mapper);
+  renderer->AddVolume(volume);
+ /* bounds = volume->GetBounds();
+ double* cropping = new double[6];
   cropping[0] = bounds[0];
   cropping[1] = (bounds[1]-bounds[0])/2+bounds[0];
   cropping[2] = bounds[2];
@@ -142,88 +134,21 @@ void renderImage(char* image, char *activity){
   cropping[4] = bounds[4];
   cropping[5] = bounds[5];
   mapper->SetCroppingRegionPlanes(cropping[0],cropping[1], cropping[2],cropping[3],cropping[4],cropping[5]);
-  //mapper->CroppingOn();
-  
-  volume->SetProperty( propertyBrain );
-  volume->SetMapper(mapper);
-  renderer1->AddVolume(volume);
-  //Activity
-  if(activity!=NULL){
+  mapper->CroppingOn();*/
 
-    double max = -100;
-    double min = +100;
-    for (int z=0; z<ad->GetDimensions()[2]; z++){
-      for (int y=0; y<ad->GetDimensions()[1]; y++){
-        for (int x=0; x<ad->GetDimensions()[0]; x++){
-          double temp = ad->GetScalarComponentAsDouble(x,y,z,0);
-          if(temp > max){
-            max = temp;
-          }
-          if(temp < min){
-            min = temp;
-          }
-        }
-      }
-    }
-    volume = vtkVolume::New();
-<<<<<<< HEAD
-    mapper = vtkSmartVolumeMapper::New();
-=======
+ 
 
-    mapper = vtkFixedPointVolumeRayCastMapper::New();
->>>>>>> 63415d03728a2e6c8f6404d8e747f1b6f703ee8e
-    mapper->SetInput(ad);
-    propertyBrain = vtkVolumeProperty::New();
-
-    colorFun =vtkColorTransferFunction::New();
-    propertyBrain->SetColor( colorFun );
-    colorFun->AddRGBPoint(	 -4,   0,   1, 1);
-    colorFun->AddRGBPoint(	 -0.2, 0,   0, 1  );
-    colorFun->AddRGBPoint(	  0,   0,   0, 0  );
-    colorFun->AddRGBPoint(	  0.2, 1,   0, 0  );
-    colorFun->AddRGBPoint(	  4,   1, 1, 0  );
-
-    opacityFun = vtkPiecewiseFunction::New();
-    propertyBrain->SetScalarOpacity( opacityFun );
-
-    opacityFun->AddPoint(-4,   1);	
-    opacityFun->AddPoint(-0.2 , 1);	
-    opacityFun->AddPoint(-0.1, 0);
-    opacityFun->AddPoint( 0,   0);
-    opacityFun->AddPoint( 0.1, 0);
-    opacityFun->AddPoint( 0.2, 1);	
-    opacityFun->AddPoint( 4, 1);	
-
-    propertyBrain->SetIndependentComponents(true);
-
-  propertyBrain->DisableGradientOpacityOn();
-    //propertyBrain->SetInterpolationTypeToLinear();
-    bounds = volume->GetBounds();
-
-    mapper->SetCroppingRegionPlanes(cropping[0],cropping[1], cropping[2],cropping[3],cropping[4],cropping[5]);
-  //  mapper->CroppingOn();
-
-    volume->SetProperty( propertyBrain );
-    volume->SetMapper(mapper);
-
-    renderer1->AddVolume(volume);
+  renderer->SetBackground(0.1, 0.2, 0.4);
+  renderer->ResetCamera();
 
 
-  }
-
-
-
-  renderer1->SetBackground(0.1, 0.2, 0.4);
-  renderer1->ResetCamera();
-	
-
-  renderer1->InteractiveOn();
   vtkRenderWindow* renWin = vtkRenderWindow::New();
-  renWin->AddRenderer(renderer1);
+  renWin->AddRenderer(renderer);
   renWin->SetSize(800, 600);
+
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   iren->SetRenderWindow(renWin);
-  
+
   vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
   iren->SetInteractorStyle(style);
 
@@ -245,6 +170,7 @@ vtkImageData* getImageData(data::Image image){
   dims[1]=image.getNrOfRows();
   dims[2]=image.getNrOfSlices();
   size = dims[0]*dims[1]*dims[2];
+  cout << "groesse: "<<size<<endl;
   mem = new double[size];
   image.copyToMem(mem,size);  
 
@@ -253,7 +179,7 @@ vtkImageData* getImageData(data::Image image){
   const util::fvector4 spacing = image.getPropertyAs<util::fvector4>( "voxelSize" );
   id->SetSpacing(spacing[0],spacing[1],spacing[2]);
   const util::fvector4 origin = image.getPropertyAs<util::fvector4>( "indexOrigin" );
-  id->SetOrigin(origin[0]/*-spacing[0]/2.0*/,origin[1]/*-spacing[1]/2.0*/,origin[2]/*-spacing[2]/2.0*/);
+  id->SetOrigin(origin[0],origin[1],origin[2]);
 
   id->SetOrigin(origin[0]-spacing[0]/2.0,origin[1]-spacing[1]/2.0,origin[2]-spacing[2]/2.0);
   for (int z=0; z<dims[2]; z++){
@@ -264,6 +190,52 @@ vtkImageData* getImageData(data::Image image){
       }
     }
   }
+  id->SetWholeExtent(0, dims[0] - 1, 0, dims[1] - 1, 0, dims[2] - 1);
   return id;
 }
 
+vtkImageData* getActivationData(data::Image activity, vtkImageData* image){
+  int dims[3];
+  int size;
+  double* mem;
+  int counter=0;
+  dims[0]=activity.getNrOfColumns();
+  dims[1]=activity.getNrOfRows();
+  dims[2]=activity.getNrOfSlices();
+  size = dims[0]*dims[1]*dims[2];
+  mem = new double[size];
+  activity.copyToMem(mem,size); 
+  image->SetNumberOfScalarComponents(2);
+
+  const util::fvector4 spacing = activity.getPropertyAs<util::fvector4>( "voxelSize" );
+//  const util::fvector4 origin = image.getPropertyAs<util::fvector4>( "indexOrigin" );
+//image->SetDimensions(dims);
+//image->SetSpacing(spacing[0],spacing[1],spacing[2]);
+  const util::fvector4 origin = activity.getPropertyAs<util::fvector4>( "indexOrigin" );
+  //image->SetOrigin(origin[0],origin[1],origin[2]);
+
+int c = 0;
+  for (int z=0; z<dims[2]*spacing[2]; z=z+spacing[2]){
+    for (int y=0; y<dims[1]*spacing[1]; y=y+spacing[1]){
+      for (int x=0; x<dims[0]*spacing[0]; x=x+spacing[0]){
+
+        for(int zz=0; zz<spacing[2]; zz++){
+          for(int yy=0; yy<spacing[1]; yy++){
+            for(int xx=0; xx<spacing[0];xx++){
+              image->SetScalarComponentFromDouble(x+xx,y+yy,z+zz,1,mem[counter]);
+              c++;            
+            }
+          }
+        }
+        counter++;
+      }
+    }
+  }
+
+
+  cout << "c: "<< c<<endl;
+  cout << "spacing: "<< spacing[0]<<" "<<spacing[1]<< spacing[2]<<endl;
+  image->UpdateData();
+  image->UpdateInformation();
+  return image;
+}

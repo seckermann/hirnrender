@@ -22,5 +22,6 @@ add_executable(test src/test.cpp)
 add_executable(test2 src/test2.cpp)
 target_link_libraries(test ${ISIS_LIB} ${ISIS_LIB_DEPENDS} ${VTK_LIBRARIES})
 target_link_libraries(test2 ${ISIS_LIB} ${ISIS_LIB_DEPENDS} ${VTK_LIBRARIES})
-
+add_executable(test3 src/test3.cpp)
+target_link_libraries(test3 ${ISIS_LIB} ${ISIS_LIB_DEPENDS} ${VTK_LIBRARIES})
 
