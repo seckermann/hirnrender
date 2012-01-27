@@ -9,7 +9,7 @@ from isis import data
 
 
 # Vista Reader
-vista = ctypes.CDLL("test/build/libgetImageData.so")
+vista = ctypes.CDLL("isisReader.so")
 
 image = data.IOFactory.load("data/norm024n.v")
 print image[0].getProperty("indexOrigin")[0]

@@ -19,10 +19,6 @@ PyMODINIT_FUNC initisisReader(void){
 
 static PyObject *isisReader_getImageData(PyObject *self, PyObject *args){
 	PyObject *vtkImage;
-
-	/*if(!PyArg_ParseTuple(args, "si", &text, &cipher))
-		return NULL;*/
-
 	
 	if(!PyArg_ParseTuple(args, "O", &vtkImage))
 		return NULL;
