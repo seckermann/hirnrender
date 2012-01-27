@@ -120,17 +120,11 @@ void renderImage(char* image, char *activity){
   opacityFun = vtkPiecewiseFunction::New();
   propertyBrain->SetScalarOpacity( opacityFun );
   opacityFun->AddPoint(0,0.00);
-<<<<<<< HEAD
   opacityFun->AddPoint(90,1);	
   
   propertyBrain->DisableGradientOpacityOn();
   //propertyBrain->SetIndependentComponents(true);
-=======
-  opacityFun->AddPoint(20,0);	
-  opacityFun->AddPoint(21,1);	
 
-  propertyBrain->SetIndependentComponents(true);
->>>>>>> 63415d03728a2e6c8f6404d8e747f1b6f703ee8e
 
   propertyBrain->SetInterpolationTypeToLinear();
   bounds = volume->GetBounds();
@@ -166,12 +160,8 @@ void renderImage(char* image, char *activity){
       }
     }
     volume = vtkVolume::New();
-<<<<<<< HEAD
-    mapper = vtkSmartVolumeMapper::New();
-=======
 
     mapper = vtkFixedPointVolumeRayCastMapper::New();
->>>>>>> 63415d03728a2e6c8f6404d8e747f1b6f703ee8e
     mapper->SetInput(ad);
     propertyBrain = vtkVolumeProperty::New();
 
