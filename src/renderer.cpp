@@ -1,35 +1,24 @@
+#include <iostream>
 //vtk
-#include <vtkInteractorStyleTrackballCamera.h>
-#include "vtkImageData.h"
-#include "vtkVolumeProperty.h"
-#include "vtkRenderer.h"
-#include "vtkSmartVolumeMapper.h"
-#include <vtkFixedPointVolumeRayCastMapper.h>
-#include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
+#include <vtkImageData.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include <vtkVolumeProperty.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkImageAppendComponents.h>
-
-#include <iostream>
-
+#include <vtkRenderWindowInteractor.h>
+#include <vtkFixedPointVolumeRayCastMapper.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+//isis
 #include <DataStorage/io_factory.hpp>
 #include "DataStorage/image.hpp"
-
-#include "CoreUtils/log.hpp"
-
-//external includes
-#include<boost/shared_ptr.hpp>
-
 
 using namespace isis;
 
 vtkImageAppendComponents* getAppendComponents(vtkImageData* image, data::Image activity);
 vtkImageData* getImageData(data::Image image);
 void renderImage(char* image, char *activity);
-
-
-
 
 int main(int argc, char **argv) {
   char * image = NULL;
@@ -110,61 +99,50 @@ void renderImage(char* image, char *activity){
   mapper->SetImageSampleDistance(0.5);
   mapper->SetSampleDistance(0.1);
   mapper->SetInput(iad->GetOutput());
-  perror("lalahior");
   propertyBrain = vtkVolumeProperty::New();
 
+
+
+
   colorFun1 =vtkColorTransferFunction::New();
-  colorFun2 =vtkColorTransferFunction::New();
-  propertyBrain->SetColor(0,colorFun1 );
-  propertyBrain->SetColor(1,colorFun2 );
-  colorFun1->AddRGBPoint(	 10, .0, .0, .0);
-  colorFun1->AddRGBPoint(	 50, .2, .2, .2);
-  colorFun1->AddRGBPoint(	 100, .4, .4, .4);
-  colorFun1->AddRGBPoint(	200, .6,.6,.6);
-  colorFun1->AddRGBPoint(	300, .8,.8,.8);
-  colorFun1->AddRGBPoint(	 0, 0, 0, 0);
-
-
-  
-  colorFun2->AddRGBPoint(	 -4, 0, 1, 1);
-  colorFun2->AddRGBPoint(	 -2, 0, 0.8, 1);
-  colorFun2->AddRGBPoint(	 -0.2, 0, 0, 1);
-  colorFun2->AddRGBPoint(	 -0.19, 0, 0, 0);
-  colorFun2->AddRGBPoint(	 0, 0, 0, 0);
-  colorFun2->AddRGBPoint(	 0.19, 0, 0, 0);
-  colorFun2->AddRGBPoint(	 0.2, 1, 0, 0);
-  colorFun2->AddRGBPoint(	 2, 1, 0.8, 0);
-  colorFun2->AddRGBPoint(	 4, 1, 1, 0);
-
+  colorFun1->AddRGBPoint( 10,	0.0, 	0.0, 	0.0);
+  colorFun1->AddRGBPoint( 50,	0.2, 	0.2, 	0.2);
+  colorFun1->AddRGBPoint(100,	0.4,	0.4, 	0.4);
+  colorFun1->AddRGBPoint(200,	0.6,	0.6,	0.6);
+  colorFun1->AddRGBPoint(300,	0.8,	0.8,	0.8);
+  colorFun1->AddRGBPoint(  0,	0,	0, 	0);
+  propertyBrain->SetColor(0, colorFun1 );
   opacityFun1 = vtkPiecewiseFunction::New();
-  opacityFun2 = vtkPiecewiseFunction::New();
-  opacityFun1->AddPoint(0,0.00);
-  opacityFun1->AddPoint(90,1);	
-
-
-
-  
-  
-  opacityFun2->AddPoint(-4,1);	
-  opacityFun2->AddPoint(-0.2,1);	
-  opacityFun2->AddPoint(-0.19,0);	
-  opacityFun2->AddPoint( 0,0);	
-  opacityFun2->AddPoint(0.19,0);	
-  opacityFun2->AddPoint(0.2,1);	
-  //opacityFun2->AddPoint(4,1);	
-  
+  opacityFun1->AddPoint( 0, 0);
+  opacityFun1->AddPoint(90, 1);	
   propertyBrain->SetScalarOpacity(0, opacityFun1 );
-  propertyBrain->SetScalarOpacity(1,opacityFun2 );
 
-  //propertyBrain->SetIndependentComponents(false);
+
+  
+  colorFun2 =vtkColorTransferFunction::New();
+  colorFun2->AddRGBPoint(-4,	 1, 	1, 	1);
+  colorFun2->AddRGBPoint(-0.2,	 0, 	0, 	1);
+  colorFun2->AddRGBPoint(-0.19,	 0, 	0, 	0);
+  colorFun2->AddRGBPoint( 0,	 0,	0, 	0);
+  colorFun2->AddRGBPoint( 0.19,	 0, 	0, 	0);
+  colorFun2->AddRGBPoint( 0.2,	 1, 	0, 	0);
+  colorFun2->AddRGBPoint( 4, 	 1, 	1, 	1);
+  propertyBrain->SetColor(1,colorFun2 );
+  opacityFun2 = vtkPiecewiseFunction::New();
+  opacityFun2->AddPoint(-4,	1);	
+  opacityFun2->AddPoint(-0.2,	1);	
+  opacityFun2->AddPoint(-0.19,	0);	
+  opacityFun2->AddPoint( 0,	0);	
+  opacityFun2->AddPoint( 0.19,	0);	
+  opacityFun2->AddPoint( 0.2,	1);	
+  propertyBrain->SetScalarOpacity(1,opacityFun2 );
+  
+
 
   propertyBrain->SetInterpolationTypeToLinear();
   volume->SetProperty( propertyBrain );
-  perror("vor SetMapper");
   volume->SetMapper(mapper);
-  perror("vor addvolume");
   renderer->AddVolume(volume);
-  perror("vor GetBounds");
   bounds = volume->GetBounds();
   double* cropping = new double[6];
   cropping[0] = bounds[0];
@@ -179,7 +157,6 @@ void renderImage(char* image, char *activity){
 
 
 
-  perror("am Ende lalahior");
   renderer->SetBackground(0.1, 0.2, 0.4);
   renderer->ResetCamera();
 
@@ -257,7 +234,6 @@ vtkImageData* getImageData(data::Image image){
 
   int *dims=image->GetDimensions();
   int c = 0;
- cout<<dims[0] ;
   for (int z=0; z<dims[2]-spacing[2]; z=z+spacing[2]){
     for (int y=0; y<dims[1]-spacing[1]; y=y+spacing[1]){
       for (int x=0; x<dims[0]-spacing[0]; x=x+spacing[0]){
