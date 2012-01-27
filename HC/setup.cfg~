@@ -1,5 +1,0 @@
-[global]
-verbose = 1
-force = 1
-
-isisReader isisReader.cpp -d _ENABLE_LOG = 1 -d _ENABLE_DEBUG = 1 
