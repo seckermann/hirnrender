@@ -3,6 +3,7 @@
 #include "vtkImageData.h"
 #include "vtkVolumeProperty.h"
 #include "vtkRenderer.h"
+#include "vtkOpenGLRenderer.h"
 #include "vtkSmartVolumeMapper.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
@@ -89,7 +90,9 @@ void renderImage(char* image, char *activity){
   }
 
 
-  vtkRenderer* renderer = vtkRenderer::New();
+
+  vtkRenderer* renderer1 = vtkOpenGLRenderer::New();
+//  vtkRenderer* renderer2 = vtkOpenGLRenderer::New();
   vtkVolumeProperty *propertyBrain;
   vtkSmartVolumeMapper* mapper;
   vtkColorTransferFunction* colorFun;  
@@ -101,6 +104,7 @@ void renderImage(char* image, char *activity){
 
   mapper = vtkSmartVolumeMapper::New();
   mapper->SetInput(id);
+ 
   propertyBrain = vtkVolumeProperty::New();
 
   colorFun =vtkColorTransferFunction::New();
@@ -116,13 +120,11 @@ void renderImage(char* image, char *activity){
   propertyBrain->SetScalarOpacity( opacityFun );
   opacityFun->AddPoint(0,0.00);
   opacityFun->AddPoint(90,1);	
-
+  
+  propertyBrain->DisableGradientOpacityOn();
   //propertyBrain->SetIndependentComponents(true);
 
   propertyBrain->SetInterpolationTypeToLinear();
-  volume->SetProperty( propertyBrain );
-  volume->SetMapper(mapper);
-  renderer->AddVolume(volume);
   bounds = volume->GetBounds();
   double* cropping = new double[6];
   cropping[0] = bounds[0];
@@ -132,8 +134,11 @@ void renderImage(char* image, char *activity){
   cropping[4] = bounds[4];
   cropping[5] = bounds[5];
   mapper->SetCroppingRegionPlanes(cropping[0],cropping[1], cropping[2],cropping[3],cropping[4],cropping[5]);
-//  mapper->CroppingOn();
-
+  //mapper->CroppingOn();
+  
+  volume->SetProperty( propertyBrain );
+  volume->SetMapper(mapper);
+  renderer1->AddVolume(volume);
   //Activity
   if(activity!=NULL){
 
@@ -153,7 +158,6 @@ void renderImage(char* image, char *activity){
       }
     }
     volume = vtkVolume::New();
-
     mapper = vtkSmartVolumeMapper::New();
     mapper->SetInput(ad);
     propertyBrain = vtkVolumeProperty::New();
@@ -170,42 +174,43 @@ void renderImage(char* image, char *activity){
     propertyBrain->SetScalarOpacity( opacityFun );
 
     opacityFun->AddPoint(-4,   1);	
-    opacityFun->AddPoint(-0.2, 1);	
+    opacityFun->AddPoint(-0.2 , 1);	
     opacityFun->AddPoint(-0.1, 0);
     opacityFun->AddPoint( 0,   0);
     opacityFun->AddPoint( 0.1, 0);
     opacityFun->AddPoint( 0.2, 1);	
     opacityFun->AddPoint( 4, 1);	
-    //propertyBrain->SetIndependentComponents(true);
 
-    propertyBrain->SetInterpolationTypeToLinear();
-    volume->SetProperty( propertyBrain );
-    volume->SetMapper(mapper);
-    renderer->AddVolume(volume);
+    propertyBrain->SetIndependentComponents(true);
 
+  propertyBrain->DisableGradientOpacityOn();
+    //propertyBrain->SetInterpolationTypeToLinear();
     bounds = volume->GetBounds();
 
     mapper->SetCroppingRegionPlanes(cropping[0],cropping[1], cropping[2],cropping[3],cropping[4],cropping[5]);
   //  mapper->CroppingOn();
 
+    volume->SetProperty( propertyBrain );
+    volume->SetMapper(mapper);
 
+    renderer1->AddVolume(volume);
 
 
   }
 
 
 
-  renderer->SetBackground(0.1, 0.2, 0.4);
-  renderer->ResetCamera();
+  renderer1->SetBackground(0.1, 0.2, 0.4);
+  renderer1->ResetCamera();
+	
 
-
+  renderer1->InteractiveOn();
   vtkRenderWindow* renWin = vtkRenderWindow::New();
-  renWin->AddRenderer(renderer);
+  renWin->AddRenderer(renderer1);
   renWin->SetSize(800, 600);
-
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   iren->SetRenderWindow(renWin);
-
+  
   vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
   iren->SetInteractorStyle(style);
 
