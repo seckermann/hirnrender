@@ -10,35 +10,64 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkFixedPointVolumeRayCastMapper.h>
 #include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkSliderRepresentation2D.h>
 //isis
 #include <DataStorage/io_factory.hpp>
 #include "DataStorage/image.hpp"
 
 
 //slider?
-#include <vtkSphereSource.h>
-#include <vtkSmartPointer.h>
+#include <vtkCommand.h>
 #include <vtkPolyData.h>
+#include <vtkWidgetEvent.h>
+#include <vtkSmartPointer.h>
 #include <vtkSliderWidget.h>
 #include <vtkPolyDataMapper.h>
-#include <vtkActor.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkPolyData.h>
-#include <vtkSmartPointer.h>
-#include <vtkSphereSource.h>
-#include <vtkCommand.h>
-#include <vtkWidgetEvent.h>
 #include <vtkCallbackCommand.h>
 #include <vtkWidgetEventTranslator.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkSliderWidget.h>
 #include <vtkSliderRepresentation3D.h>
-#include <vtkProperty.h>
 
- 
 
+class vtkSliderCallback : public vtkCommand
+{
+  public:
+    static vtkSliderCallback *New() 
+    {
+      return new vtkSliderCallback;
+    }
+    virtual void Execute(vtkObject *caller, unsigned long, void*)
+    {
+      vtkSliderWidget *sliderWidget = 
+        reinterpret_cast<vtkSliderWidget*>(caller);
+      double value = static_cast<double>(static_cast<vtkSliderRepresentation *>(sliderWidget->GetRepresentation())->GetValue());
+
+      switch(option){
+        case 1:
+          this->OpacityFun->RemovePoint(-4);	
+          this->OpacityFun->RemovePoint(-0.2);	
+          this->OpacityFun->RemovePoint( 0.2);
+          this->OpacityFun->AddPoint(-4,	value);	
+          this->OpacityFun->AddPoint(-0.2,	value);	
+          this->OpacityFun->AddPoint( 0.2,	value);	
+          break;
+        case 2:
+          this->ColorFun->AddRGBSegment (0,0,0,0,4,0,0,0);
+          this->ColorFun->AddRGBSegment (value-0.1,0,0,0,4,0,0,0);
+          this->ColorFun->AddRGBSegment (value,1,0,0,4,1,1,1);
+          break;
+        case 3:
+          this->ColorFun->AddRGBSegment (-4,0,0,0,0,0,0,0);
+          this->ColorFun->AddRGBSegment (-4,1,1,1,value,0,0,1);
+          this->ColorFun->AddRGBSegment (value+0.1,0,0,0,0,0,0,0);
+          break;
+
+      }
+    }
+    vtkSliderCallback():OpacityFun(0) {}
+    vtkPiecewiseFunction* OpacityFun;
+    vtkColorTransferFunction* ColorFun;
+    int option;
+};
 
 using namespace isis;
 
@@ -122,8 +151,8 @@ void renderImage(char* image, char *activity){
   //bild 1
 
   mapper = vtkFixedPointVolumeRayCastMapper::New();
-  mapper->SetImageSampleDistance(0.5);
-  mapper->SetSampleDistance(0.1);
+  //mapper->SetImageSampleDistance(0.5);
+  //mapper->SetSampleDistance(0.1);
   mapper->SetInput(iad->GetOutput());
   propertyBrain = vtkVolumeProperty::New();
 
@@ -144,7 +173,7 @@ void renderImage(char* image, char *activity){
   propertyBrain->SetScalarOpacity(0, opacityFun1 );
 
 
-  
+
   colorFun2 =vtkColorTransferFunction::New();
   colorFun2->AddRGBPoint(-4,	 1, 	1, 	1);
   colorFun2->AddRGBPoint(-0.2,	 0, 	0, 	1);
@@ -155,14 +184,14 @@ void renderImage(char* image, char *activity){
   colorFun2->AddRGBPoint( 4, 	 1, 	1, 	1);
   propertyBrain->SetColor(1,colorFun2 );
   opacityFun2 = vtkPiecewiseFunction::New();
-  opacityFun2->AddPoint(-4,	1);	
+  opacityFun2->AddPoint(-4, 	1);	
   opacityFun2->AddPoint(-0.2,	1);	
   opacityFun2->AddPoint(-0.19,	0);	
   opacityFun2->AddPoint( 0,	0);	
   opacityFun2->AddPoint( 0.19,	0);	
   opacityFun2->AddPoint( 0.2,	1);	
   propertyBrain->SetScalarOpacity(1,opacityFun2 );
-  
+
 
 
   propertyBrain->SetInterpolationTypeToLinear();
@@ -181,8 +210,6 @@ void renderImage(char* image, char *activity){
   mapper->CroppingOn();
 
 
-
-
   renderer->SetBackground(0.1, 0.2, 0.4);
   renderer->ResetCamera();
 
@@ -190,13 +217,101 @@ void renderImage(char* image, char *activity){
   vtkRenderWindow* renWin = vtkRenderWindow::New();
   renWin->AddRenderer(renderer);
   renWin->SetSize(800, 600);
-  
+
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   iren->SetRenderWindow(renWin);
-
   vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
   iren->SetInteractorStyle(style);
 
+
+
+
+
+
+
+
+
+
+  // Here we describe the representation of the widget.
+  vtkSmartPointer<vtkSliderRepresentation2D> opacityRep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
+  opacityRep->SetMinimumValue(0.0);
+  opacityRep->SetMaximumValue(1.0);
+  opacityRep->SetValue(1);
+  opacityRep->SetTitleText("Opacity");
+
+  vtkSmartPointer<vtkSliderRepresentation2D> redRep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
+  redRep->SetMinimumValue(0.2);
+  redRep->SetMaximumValue(4.0);
+  redRep->SetValue(0.2);
+  redRep->SetTitleText("red");
+
+  vtkSmartPointer<vtkSliderRepresentation2D> blueRep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
+  blueRep->SetMinimumValue(-4.0);
+  blueRep->SetMaximumValue(-0.2);
+  blueRep->SetValue(-0.2);
+  blueRep->SetTitleText("blue");
+
+
+  // Here we use normalized display coordinates (0,1) so that the
+  // slider will stay in the same proportionate location if the window
+  // is resized.
+
+  // Opacity
+  opacityRep->GetPoint1Coordinate()->SetCoordinateSystemToNormalizedDisplay();
+  opacityRep->GetPoint1Coordinate()->SetValue(0.7 ,1);
+  opacityRep->GetPoint2Coordinate()->SetCoordinateSystemToNormalizedDisplay();
+  opacityRep->GetPoint2Coordinate()->SetValue(0.7, .1);
+
+  vtkSmartPointer<vtkSliderCallback> opacityCallback = vtkSmartPointer<vtkSliderCallback>::New();
+  opacityCallback->OpacityFun = opacityFun2;
+  opacityCallback->option = 1;
+
+  vtkSmartPointer<vtkSliderWidget> opacitySliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
+  opacitySliderWidget->SetInteractor(iren);
+  opacitySliderWidget->SetRepresentation(opacityRep);
+  opacitySliderWidget->SetAnimationModeToAnimate();
+  opacitySliderWidget->EnabledOn();
+
+  //red
+  redRep->GetPoint1Coordinate()->SetCoordinateSystemToNormalizedDisplay();
+  redRep->GetPoint1Coordinate()->SetValue(0.8 ,1);
+  redRep->GetPoint2Coordinate()->SetCoordinateSystemToNormalizedDisplay();
+  redRep->GetPoint2Coordinate()->SetValue(0.8, .1);
+
+  vtkSmartPointer<vtkSliderCallback> redCallback = vtkSmartPointer<vtkSliderCallback>::New();
+  redCallback->ColorFun = colorFun2;
+  redCallback->option = 2;
+
+  vtkSmartPointer<vtkSliderWidget> redSliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
+  redSliderWidget->SetInteractor(iren);
+  redSliderWidget->SetRepresentation(redRep);
+  redSliderWidget->SetAnimationModeToAnimate();
+  redSliderWidget->EnabledOn();
+
+//blue
+  blueRep->GetPoint1Coordinate()->SetCoordinateSystemToNormalizedDisplay();
+  blueRep->GetPoint1Coordinate()->SetValue(0.9 ,1);
+  blueRep->GetPoint2Coordinate()->SetCoordinateSystemToNormalizedDisplay();
+  blueRep->GetPoint2Coordinate()->SetValue(0.9, .1);
+
+  vtkSmartPointer<vtkSliderCallback> blueCallback = vtkSmartPointer<vtkSliderCallback>::New();
+  blueCallback->ColorFun = colorFun2;
+  blueCallback->option = 3;
+
+  vtkSmartPointer<vtkSliderWidget> blueSliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
+  blueSliderWidget->SetInteractor(iren);
+  blueSliderWidget->SetRepresentation(blueRep);
+  blueSliderWidget->SetAnimationModeToAnimate();
+  blueSliderWidget->EnabledOn();
+  // Observe the interaction events of the widget. If the computation
+  // in the callback is time consuming, observe the
+  // EndInteractionEvent instead.
+  opacitySliderWidget->AddObserver(vtkCommand::InteractionEvent,opacityCallback);
+
+  redSliderWidget->AddObserver(vtkCommand::InteractionEvent,redCallback);
+
+
+  blueSliderWidget->AddObserver(vtkCommand::InteractionEvent,blueCallback);
 
 
 
@@ -210,16 +325,6 @@ void renderImage(char* image, char *activity){
 
   iren->Initialize();
   iren->Start(); 
-
-//  opacityFun1 = vtkPiecewiseFunction::New();
-  opacityFun1->RemovePoint(90);	
- // propertyBrain->SetScalarOpacity(0, opacityFun1 );
-
-
-
-  volume->Update();
-  renWin->WindowRemap();
-  iren->ReInitialize();
 
 
 }
@@ -244,34 +349,34 @@ vtkImageData* getImageData(data::Image image){
   const util::fvector4 origin = image.getPropertyAs<util::fvector4>( "indexOrigin" );
   id->SetOrigin(origin[0],origin[1],origin[2]);
   for (int z=0; z<dims[2]; z++){
-      for (int y=0; y<dims[1]; y++){
-        for (int x=0; x<dims[0]; x++){
-          id->SetScalarComponentFromDouble(x,y,z,0,mem[counter]);
-          counter++;
-        }
+    for (int y=0; y<dims[1]; y++){
+      for (int x=0; x<dims[0]; x++){
+        id->SetScalarComponentFromDouble(x,y,z,0,mem[counter]);
+        counter++;
       }
     }
-    return id;
   }
+  return id;
+}
 
-  vtkImageAppendComponents* getAppendComponents(vtkImageData* image, data::Image activity){
-    vtkImageAppendComponents* iad = vtkImageAppendComponents::New();
-    iad->AddInput(image);
+vtkImageAppendComponents* getAppendComponents(vtkImageData* image, data::Image activity){
+  vtkImageAppendComponents* iad = vtkImageAppendComponents::New();
+  iad->AddInput(image);
 
-    vtkImageData* ad = vtkImageData::New();
+  vtkImageData* ad = vtkImageData::New();
 
-    int dimensions[3];
-    int size;
-    double* mem;
-    int counter=0;
-    dimensions[0]=activity.getNrOfColumns();
-    dimensions[1]=activity.getNrOfRows();
-    dimensions[2]=activity.getNrOfSlices();
-    size = dimensions[0]*dimensions[1]*dimensions[2];
-    mem = new double[size];
-    activity.copyToMem(mem,size);  
+  int dimensions[3];
+  int size;
+  double* mem;
+  int counter=0;
+  dimensions[0]=activity.getNrOfColumns();
+  dimensions[1]=activity.getNrOfRows();
+  dimensions[2]=activity.getNrOfSlices();
+  size = dimensions[0]*dimensions[1]*dimensions[2];
+  mem = new double[size];
+  activity.copyToMem(mem,size);  
 
-    ad->SetDimensions(image->GetDimensions());
+  ad->SetDimensions(image->GetDimensions());
   ad->SetSpacing(image->GetSpacing());
   const util::fvector4 origin = activity.getPropertyAs<util::fvector4>( "indexOrigin" );
   ad->SetOrigin(origin[0],origin[1],origin[2]);
@@ -300,6 +405,6 @@ vtkImageData* getImageData(data::Image image){
       }
     }
   }
-iad->AddInput(ad);
+  iad->AddInput(ad);
   return iad;
 }
