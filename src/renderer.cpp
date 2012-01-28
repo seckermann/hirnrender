@@ -67,6 +67,9 @@ class vtkSliderCallback : public vtkCommand
     vtkPiecewiseFunction* OpacityFun;
     vtkColorTransferFunction* ColorFun;
     int option;
+    double red;
+    double blue;
+    double opacity;
 };
 
 using namespace isis;
