@@ -159,10 +159,10 @@ void renderImage(char* image, char *activity){
   //bild 1
 
   mapper = vtkFixedPointVolumeRayCastMapper::New();
-  mapper->SetImageSampleDistance(0.5);
-  mapper->SetSampleDistance(0.1);
-  //mapper->SetImageSampleDistance(1.5);
-  //mapper->SetSampleDistance(0.3);
+  //mapper->SetImageSampleDistance(0.5);
+  //mapper->SetSampleDistance(0.1);
+  mapper->SetImageSampleDistance(1.5);
+  mapper->SetSampleDistance(0.3);
   mapper->SetInput(iad->GetOutput());
   propertyBrain = vtkVolumeProperty::New();
 
