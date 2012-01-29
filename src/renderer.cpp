@@ -28,49 +28,54 @@
 #include <vtkSliderRepresentation3D.h>
 
 
-class vtkSliderCallback : public vtkCommand
-{
+class vtkSliderCallback : public vtkCommand{
   public:
-    static vtkSliderCallback *New() 
-    {
+  static double red;
+  static double blue;
+  static double opacity;
+  static vtkPiecewiseFunction* OpacityFun;
+  static vtkColorTransferFunction* ColorFun;
+    static vtkSliderCallback *New(){
       return new vtkSliderCallback;
     }
-    virtual void Execute(vtkObject *caller, unsigned long, void*)
-    {
-      vtkSliderWidget *sliderWidget = 
-        reinterpret_cast<vtkSliderWidget*>(caller);
+    virtual void Execute(vtkObject *caller, unsigned long, void*){
+      vtkSliderWidget *sliderWidget = reinterpret_cast<vtkSliderWidget*>(caller);
       double value = static_cast<double>(static_cast<vtkSliderRepresentation *>(sliderWidget->GetRepresentation())->GetValue());
 
       switch(option){
         case 1:
-          this->OpacityFun->RemovePoint(-4);	
-          this->OpacityFun->RemovePoint(-0.2);	
-          this->OpacityFun->RemovePoint( 0.2);
-          this->OpacityFun->AddPoint(-4,	value);	
-          this->OpacityFun->AddPoint(-0.2,	value);	
-          this->OpacityFun->AddPoint( 0.2,	value);	
+          this->opacity=value;
+
+          this->OpacityFun->AddSegment(-4,value,this->blue, value);
+          this->OpacityFun->AddSegment(this->blue+0.1,0,this->red-0.1, 0);
+          this->OpacityFun->AddSegment(this->red,value,4, value);
           break;
         case 2:
+          this->red=value;
           this->ColorFun->AddRGBSegment (0,0,0,0,4,0,0,0);
           this->ColorFun->AddRGBSegment (value-0.1,0,0,0,4,0,0,0);
           this->ColorFun->AddRGBSegment (value,1,0,0,4,1,1,1);
+          this->OpacityFun->AddSegment(0,0,value-0.1,0);	
+          this->OpacityFun->AddSegment(value,this->opacity,4,this->opacity);	
           break;
         case 3:
+          this->blue=value;
           this->ColorFun->AddRGBSegment (-4,0,0,0,0,0,0,0);
           this->ColorFun->AddRGBSegment (-4,1,1,1,value,0,0,1);
-          this->ColorFun->AddRGBSegment (value+0.1,0,0,0,0,0,0,0);
+          this->OpacityFun->AddSegment(-4,this->opacity,value,this->opacity);	
+          this->OpacityFun->AddSegment(value+0.1,0,0,0);	
           break;
-
       }
     }
-    vtkSliderCallback():OpacityFun(0) {}
-    vtkPiecewiseFunction* OpacityFun;
-    vtkColorTransferFunction* ColorFun;
+//    vtkSliderCallback():OpacityFun(0) {}
     int option;
-    double red;
-    double blue;
-    double opacity;
+    
 };
+double vtkSliderCallback::opacity=1;
+double  vtkSliderCallback::red=0.2;
+double  vtkSliderCallback::blue=-0.2;
+vtkPiecewiseFunction* vtkSliderCallback::OpacityFun;
+vtkColorTransferFunction* vtkSliderCallback::ColorFun;
 
 using namespace isis;
 
@@ -154,8 +159,10 @@ void renderImage(char* image, char *activity){
   //bild 1
 
   mapper = vtkFixedPointVolumeRayCastMapper::New();
-  //mapper->SetImageSampleDistance(0.5);
-  //mapper->SetSampleDistance(0.1);
+  mapper->SetImageSampleDistance(0.5);
+  mapper->SetSampleDistance(0.1);
+  //mapper->SetImageSampleDistance(1.5);
+  //mapper->SetSampleDistance(0.3);
   mapper->SetInput(iad->GetOutput());
   propertyBrain = vtkVolumeProperty::New();
 
@@ -267,6 +274,7 @@ void renderImage(char* image, char *activity){
 
   vtkSmartPointer<vtkSliderCallback> opacityCallback = vtkSmartPointer<vtkSliderCallback>::New();
   opacityCallback->OpacityFun = opacityFun2;
+    opacityCallback->opacity = 1;
   opacityCallback->option = 1;
 
   vtkSmartPointer<vtkSliderWidget> opacitySliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
@@ -283,6 +291,7 @@ void renderImage(char* image, char *activity){
 
   vtkSmartPointer<vtkSliderCallback> redCallback = vtkSmartPointer<vtkSliderCallback>::New();
   redCallback->ColorFun = colorFun2;
+  //redCallback->red = 0.2;
   redCallback->option = 2;
 
   vtkSmartPointer<vtkSliderWidget> redSliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
@@ -291,7 +300,7 @@ void renderImage(char* image, char *activity){
   redSliderWidget->SetAnimationModeToAnimate();
   redSliderWidget->EnabledOn();
 
-//blue
+  //blue
   blueRep->GetPoint1Coordinate()->SetCoordinateSystemToNormalizedDisplay();
   blueRep->GetPoint1Coordinate()->SetValue(0.9 ,1);
   blueRep->GetPoint2Coordinate()->SetCoordinateSystemToNormalizedDisplay();
@@ -299,6 +308,7 @@ void renderImage(char* image, char *activity){
 
   vtkSmartPointer<vtkSliderCallback> blueCallback = vtkSmartPointer<vtkSliderCallback>::New();
   blueCallback->ColorFun = colorFun2;
+ // blueCallback->blue = -0.2;
   blueCallback->option = 3;
 
   vtkSmartPointer<vtkSliderWidget> blueSliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
