@@ -233,15 +233,6 @@ void renderImage(char* image, char *activity){
   vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
   iren->SetInteractorStyle(style);
 
-
-
-
-
-
-
-
-
-
   // Here we describe the representation of the widget.
   vtkSmartPointer<vtkSliderRepresentation2D> opacityRep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
   opacityRep->SetMinimumValue(0.0);
@@ -260,7 +251,6 @@ void renderImage(char* image, char *activity){
   blueRep->SetMaximumValue(-0.2);
   blueRep->SetValue(-0.2);
   blueRep->SetTitleText("blue");
-
 
   // Here we use normalized display coordinates (0,1) so that the
   // slider will stay in the same proportionate location if the window
