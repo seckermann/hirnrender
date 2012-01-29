@@ -53,7 +53,7 @@ class vtkSliderCallback : public vtkCommand{
         case 2:
           this->red=value;
           this->ColorFun->AddRGBSegment (0,0,0,0,4,0,0,0);
-          this->ColorFun->AddRGBSegment (value-0.1,0,0,0,4,0,0,0);
+          this->ColorFun->AddRGBSegment (0,0,0,0,value-0.1,0,0,0);
           this->ColorFun->AddRGBSegment (value,1,0,0,4,1,1,1);
           this->OpacityFun->AddSegment(0,0,value-0.1,0);	
           this->OpacityFun->AddSegment(value,this->opacity,4,this->opacity);	
@@ -325,16 +325,6 @@ void renderImage(char* image, char *activity){
 
 
   blueSliderWidget->AddObserver(vtkCommand::InteractionEvent,blueCallback);
-
-
-
-
-
-
-
-
-
-
 
   iren->Initialize();
   iren->Start(); 
