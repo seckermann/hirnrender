@@ -1,5 +1,8 @@
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 //vtk
+#include <vtkPlane.h>
 #include <vtkImageData.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -30,11 +33,12 @@
 
 class vtkSliderCallback : public vtkCommand{
   public:
-  static double red;
-  static double blue;
-  static double opacity;
-  static vtkPiecewiseFunction* OpacityFun;
-  static vtkColorTransferFunction* ColorFun;
+    static double red;
+    static double blue;
+    static double opacity;
+    static vtkPiecewiseFunction* OpacityFun;
+    static vtkColorTransferFunction* ColorFun;
+    static vtkPlane* Plane1;
     static vtkSliderCallback *New(){
       return new vtkSliderCallback;
     }
@@ -65,21 +69,24 @@ class vtkSliderCallback : public vtkCommand{
           this->OpacityFun->AddSegment(-4,this->opacity,value,this->opacity);	
           this->OpacityFun->AddSegment(value+0.001,0,0,0);	
           break;
+        case 4:
+          this->Plane1->SetOrigin(value,0,0);
+          break;
       }
     }
-//    vtkSliderCallback():OpacityFun(0) {}
+    //    vtkSliderCallback():OpacityFun(0) {}
     int option;
-    
+
 };
-double vtkSliderCallback::opacity=1;
-double  vtkSliderCallback::red=0.2;
-double  vtkSliderCallback::blue=-0.2;
+double vtkSliderCallback::opacity;
+double  vtkSliderCallback::red;
+double  vtkSliderCallback::blue;
 vtkPiecewiseFunction* vtkSliderCallback::OpacityFun;
 vtkColorTransferFunction* vtkSliderCallback::ColorFun;
-
+vtkPlane* vtkSliderCallback::Plane1;
 using namespace isis;
 
-vtkImageAppendComponents* getAppendComponents(vtkImageData* image, data::Image activity);
+vtkImageAppendComponents* getAppendComponents(vtkImageData* image, data::Image activity,double* range);
 vtkImageData* getImageData(data::Image image);
 void renderImage(char* image, char *activity);
 
@@ -127,6 +134,7 @@ void renderImage(char* image, char *activity){
   vtkImageData* ad;
   vtkImageData* id;
   vtkImageAppendComponents* iad;
+  double* range = new double[2]; 
   //Image
   std::list<data::Image> images = data::IOFactory::load(image);
   for (std::list<data::Image>::const_iterator image = images.begin(); image != images.end(); ++image){
@@ -137,7 +145,7 @@ void renderImage(char* image, char *activity){
   //Activity
   if(activity!= NULL){
     std::list<data::Image> activities = data::IOFactory::load(activity);
-    iad= getAppendComponents(id, activities.front());
+    iad= getAppendComponents(id,  activities.front(),range);
   }else{
     iad = vtkImageAppendComponents::New();
     iad->AddInput(id);
@@ -145,6 +153,8 @@ void renderImage(char* image, char *activity){
   }
 
 
+  double* bounds= id->GetBounds();
+  cout<< "range "<<range[0]<<" "<<range[1]<<endl;
 
   vtkRenderer* renderer = vtkRenderer::New();
   vtkVolumeProperty *propertyBrain;
@@ -155,7 +165,6 @@ void renderImage(char* image, char *activity){
   vtkPiecewiseFunction* opacityFun2;
 
   vtkVolume * volume = vtkVolume::New();
-  double* bounds;
   //bild 1
 
   mapper = vtkFixedPointVolumeRayCastMapper::New();
@@ -208,17 +217,11 @@ void renderImage(char* image, char *activity){
   volume->SetProperty( propertyBrain );
   volume->SetMapper(mapper);
   renderer->AddVolume(volume);
-  bounds = volume->GetBounds();
-  double* cropping = new double[6];
-  cropping[0] = bounds[0];
-  cropping[1] = (bounds[1]-bounds[0])/2+bounds[0];
-  cropping[2] = bounds[2];
-  cropping[3] = bounds[3];
-  cropping[4] = bounds[4];
-  cropping[5] = bounds[5];
-  mapper->SetCroppingRegionPlanes(cropping[0],cropping[1], cropping[2],cropping[3],cropping[4],cropping[5]);
-  mapper->CroppingOn();
 
+  vtkPlane* plane1 =vtkPlane::New(); 
+  plane1->SetNormal(1,0,0);
+  plane1->SetOrigin(bounds[0],0,0);
+  mapper->AddClippingPlane(plane1);
 
   renderer->SetBackground(0.1, 0.2, 0.4);
   renderer->ResetCamera();
@@ -252,6 +255,13 @@ void renderImage(char* image, char *activity){
   blueRep->SetValue(-0.2);
   blueRep->SetTitleText("blue");
 
+  vtkSmartPointer<vtkSliderRepresentation2D> c1Rep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
+  c1Rep->SetMinimumValue(bounds[0]);
+  c1Rep->SetMaximumValue(bounds[1]);
+  c1Rep->SetValue(bounds[0]);
+  c1Rep->SetTitleText("c1");
+
+
   // Here we use normalized display coordinates (0,1) so that the
   // slider will stay in the same proportionate location if the window
   // is resized.
@@ -264,7 +274,7 @@ void renderImage(char* image, char *activity){
 
   vtkSmartPointer<vtkSliderCallback> opacityCallback = vtkSmartPointer<vtkSliderCallback>::New();
   opacityCallback->OpacityFun = opacityFun2;
-    opacityCallback->opacity = 1;
+  opacityCallback->opacity = 1;
   opacityCallback->option = 1;
 
   vtkSmartPointer<vtkSliderWidget> opacitySliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
@@ -281,7 +291,7 @@ void renderImage(char* image, char *activity){
 
   vtkSmartPointer<vtkSliderCallback> redCallback = vtkSmartPointer<vtkSliderCallback>::New();
   redCallback->ColorFun = colorFun2;
-  //redCallback->red = 0.2;
+  redCallback->red = 0.2;
   redCallback->option = 2;
 
   vtkSmartPointer<vtkSliderWidget> redSliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
@@ -298,7 +308,7 @@ void renderImage(char* image, char *activity){
 
   vtkSmartPointer<vtkSliderCallback> blueCallback = vtkSmartPointer<vtkSliderCallback>::New();
   blueCallback->ColorFun = colorFun2;
- // blueCallback->blue = -0.2;
+  blueCallback->blue = -0.2;
   blueCallback->option = 3;
 
   vtkSmartPointer<vtkSliderWidget> blueSliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
@@ -306,6 +316,29 @@ void renderImage(char* image, char *activity){
   blueSliderWidget->SetRepresentation(blueRep);
   blueSliderWidget->SetAnimationModeToAnimate();
   blueSliderWidget->EnabledOn();
+
+
+
+  //clipping1
+  //
+  c1Rep->GetPoint1Coordinate()->SetCoordinateSystemToNormalizedDisplay();
+  c1Rep->GetPoint1Coordinate()->SetValue(0.6 ,1);
+  c1Rep->GetPoint2Coordinate()->SetCoordinateSystemToNormalizedDisplay();
+  c1Rep->GetPoint2Coordinate()->SetValue(0.6, .1);
+
+  vtkSmartPointer<vtkSliderCallback> c1Callback = vtkSmartPointer<vtkSliderCallback>::New();
+  c1Callback->Plane1 = plane1;
+  c1Callback->option = 4;
+
+  vtkSmartPointer<vtkSliderWidget> c1SliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
+  c1SliderWidget->SetInteractor(iren);
+  c1SliderWidget->SetRepresentation(c1Rep);
+  c1SliderWidget->SetAnimationModeToAnimate();
+  c1SliderWidget->EnabledOn();
+
+
+
+
   // Observe the interaction events of the widget. If the computation
   // in the callback is time consuming, observe the
   // EndInteractionEvent instead.
@@ -315,6 +348,8 @@ void renderImage(char* image, char *activity){
 
 
   blueSliderWidget->AddObserver(vtkCommand::InteractionEvent,blueCallback);
+
+  c1SliderWidget->AddObserver(vtkCommand::InteractionEvent,c1Callback);
 
   iren->Initialize();
   iren->Start(); 
@@ -352,7 +387,7 @@ vtkImageData* getImageData(data::Image image){
   return id;
 }
 
-vtkImageAppendComponents* getAppendComponents(vtkImageData* image, data::Image activity){
+vtkImageAppendComponents* getAppendComponents(vtkImageData* image, data::Image activity,double* range){
   vtkImageAppendComponents* iad = vtkImageAppendComponents::New();
   iad->AddInput(image);
 
@@ -398,6 +433,8 @@ vtkImageAppendComponents* getAppendComponents(vtkImageData* image, data::Image a
       }
     }
   }
+  range[0]=-1;
+  range[1]=1;
   iad->AddInput(ad);
   return iad;
 }
