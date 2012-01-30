@@ -47,15 +47,15 @@ class vtkSliderCallback : public vtkCommand{
           this->opacity=value;
 
           this->OpacityFun->AddSegment(-4,value,this->blue, value);
-          this->OpacityFun->AddSegment(this->blue+0.1,0,this->red-0.1, 0);
+          this->OpacityFun->AddSegment(this->blue+0.001,0,this->red-0.001, 0);
           this->OpacityFun->AddSegment(this->red,value,4, value);
           break;
         case 2:
           this->red=value;
           this->ColorFun->AddRGBSegment (0,0,0,0,4,0,0,0);
-          this->ColorFun->AddRGBSegment (0,0,0,0,value-0.1,0,0,0);
+          this->ColorFun->AddRGBSegment (0,0,0,0,value-0.001,0,0,0);
           this->ColorFun->AddRGBSegment (value,1,0,0,4,1,1,1);
-          this->OpacityFun->AddSegment(0,0,value-0.1,0);	
+          this->OpacityFun->AddSegment(0,0,value-0.001,0);	
           this->OpacityFun->AddSegment(value,this->opacity,4,this->opacity);	
           break;
         case 3:
@@ -63,7 +63,7 @@ class vtkSliderCallback : public vtkCommand{
           this->ColorFun->AddRGBSegment (-4,0,0,0,0,0,0,0);
           this->ColorFun->AddRGBSegment (-4,1,1,1,value,0,0,1);
           this->OpacityFun->AddSegment(-4,this->opacity,value,this->opacity);	
-          this->OpacityFun->AddSegment(value+0.1,0,0,0);	
+          this->OpacityFun->AddSegment(value+0.001,0,0,0);	
           break;
       }
     }
