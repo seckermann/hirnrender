@@ -22,7 +22,7 @@ ADD_DEFINITIONS(-D_ENABLE_DEBUG=1)
 ###############################################################################
 # add a target
 ###############################################################################
-add_executable(renderer src/renderer.cpp )
+add_executable(renderer src/renderer.cpp src/volume.cpp src/volume.h src/vtkSliderCallback.cpp src/vtkSliderCallback.h)
 target_link_libraries(renderer ${ISIS_LIB} ${ISIS_LIB_DEPENDS} ${VTK_LIBRARIES})
 
 #SET(QT_USE_QTOPENGL TRUE)
