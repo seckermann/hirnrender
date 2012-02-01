@@ -174,12 +174,12 @@ void renderImage(char* image, char *activity){
 
 
 
-    vtkSmartPointer<vtkSliderWidget> opacitySliderWidget;
-    vtkSmartPointer<vtkSliderWidget> blueSliderWidget;
-    vtkSmartPointer<vtkSliderWidget> redSliderWidget;
-    vtkSliderCallback* redCallback;
-    vtkSliderCallback* opacityCallback;
-    vtkSliderCallback* blueCallback;
+  vtkSmartPointer<vtkSliderWidget> opacitySliderWidget;
+  vtkSmartPointer<vtkSliderWidget> blueSliderWidget;
+  vtkSmartPointer<vtkSliderWidget> redSliderWidget;
+  vtkSliderCallback* redCallback;
+  vtkSliderCallback* opacityCallback;
+  vtkSliderCallback* blueCallback;
 
 
   if(iad->hasActivity()){
@@ -202,7 +202,7 @@ void renderImage(char* image, char *activity){
     blueRep->SetValue(-0.2);
     blueRep->SetTitleText("blue");
 
-   
+
     // Here we use normalized display coordinates (0,1) so that the
     // slider will stay in the same proportionate location if the window
     // is resized.
@@ -263,11 +263,11 @@ void renderImage(char* image, char *activity){
 
   //clipping1
   //
-   vtkSmartPointer<vtkSliderRepresentation2D> c1Rep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
-    c1Rep->SetMinimumValue(bounds[0]);
-    c1Rep->SetMaximumValue(bounds[1]);
-    c1Rep->SetValue(bounds[0]);
-    c1Rep->SetTitleText("c1");
+  vtkSmartPointer<vtkSliderRepresentation2D> c1Rep = vtkSmartPointer<vtkSliderRepresentation2D>::New();
+  c1Rep->SetMinimumValue(bounds[0]);
+  c1Rep->SetMaximumValue(bounds[1]);
+  c1Rep->SetValue(bounds[0]);
+  c1Rep->SetTitleText("c1");
 
 
   c1Rep->GetPoint1Coordinate()->SetCoordinateSystemToNormalizedDisplay();
@@ -293,12 +293,12 @@ void renderImage(char* image, char *activity){
   // EndInteractionEvent instead.
   if(iad->hasActivity()){
 
-  opacitySliderWidget->AddObserver(vtkCommand::InteractionEvent,opacityCallback);
+    opacitySliderWidget->AddObserver(vtkCommand::InteractionEvent,opacityCallback);
 
-  redSliderWidget->AddObserver(vtkCommand::InteractionEvent,redCallback);
+    redSliderWidget->AddObserver(vtkCommand::InteractionEvent,redCallback);
 
 
-  blueSliderWidget->AddObserver(vtkCommand::InteractionEvent,blueCallback);
+    blueSliderWidget->AddObserver(vtkCommand::InteractionEvent,blueCallback);
   }
   c1SliderWidget->AddObserver(vtkCommand::InteractionEvent,c1Callback);
 
