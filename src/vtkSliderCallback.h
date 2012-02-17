@@ -16,6 +16,8 @@ class vtkSliderCallback : public vtkCommand{
     static vtkPiecewiseFunction* OpacityFun;
     static vtkColorTransferFunction* ColorFun;
     static vtkPlane* Plane1;
+	static vtkPlane* Plane2;
+	static vtkPlane* Plane3;
     virtual void Execute(vtkObject *caller, unsigned long, void*);
 
     int option;

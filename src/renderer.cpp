@@ -153,6 +153,7 @@ void renderImage(char* image, char *activity){
   volume->SetMapper(mapper);
   renderer->AddVolume(volume);
 
+//Kommentar...irgendwas
   vtkPlane* plane1 =vtkPlane::New(); 
   plane1->SetNormal(1,0,0);
   plane1->SetOrigin(bounds[0],0,0);

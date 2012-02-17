@@ -37,6 +37,12 @@ void vtkSliderCallback::Execute(vtkObject *caller, unsigned long, void*){
     case 4:
       this->Plane1->SetOrigin(value,0,0);
       break;
+	case 5:
+		this->Plane2->SetOrigin(0,value,0);
+		break;
+	case 6:
+		this->Plane3->SetOrigin(0,0,value);
+		break;
   }
 }
 
@@ -47,3 +53,5 @@ double vtkSliderCallback::opacity;
 vtkPiecewiseFunction* vtkSliderCallback::OpacityFun;
 vtkColorTransferFunction* vtkSliderCallback::ColorFun;
 vtkPlane* vtkSliderCallback::Plane1;
+vtkPlane* vtkSliderCallback::Plane2;
+vtkPlane* vtkSliderCallback::Plane3;
