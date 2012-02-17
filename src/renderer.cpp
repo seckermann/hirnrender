@@ -3,6 +3,7 @@
 #include <stdlib.h>
 //vtk
 #include <vtkPlane.h>
+#include <vtkCamera.h>
 #include <vtkImageData.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -101,6 +102,7 @@ void renderImage(char* image, char *activity){
 
   vtkVolume * volume = vtkVolume::New();
   //bild 1
+  
 
   mapper = vtkFixedPointVolumeRayCastMapper::New();
   //mapper->SetImageSampleDistance(0.5);
@@ -152,6 +154,7 @@ void renderImage(char* image, char *activity){
   volume->SetProperty( propertyBrain );
   volume->SetMapper(mapper);
   renderer->AddVolume(volume);
+  
 
   vtkPlane* plane1 =vtkPlane::New(); 
   plane1->SetNormal(1,0,0);
@@ -160,6 +163,10 @@ void renderImage(char* image, char *activity){
 
   renderer->SetBackground(0.1, 0.2, 0.4);
   renderer->ResetCamera();
+  vtkCamera* camera = renderer->GetActiveCamera();
+  int* pos = camera->GetPosition();
+
+  camera->SetPosition(pos[0],pos[1],pos[2]);
 
 
   vtkRenderWindow* renWin = vtkRenderWindow::New();
@@ -169,6 +176,7 @@ void renderImage(char* image, char *activity){
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   iren->SetRenderWindow(renWin);
   vtkInteractorStyleTrackballCamera *style = vtkInteractorStyleTrackballCamera::New();
+
   iren->SetInteractorStyle(style);
 
 
