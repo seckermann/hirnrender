@@ -154,10 +154,20 @@ void renderImage(char* image, char *activity){
   renderer->AddVolume(volume);
 
 //Kommentar...irgendwas
-  vtkPlane* plane1 =vtkPlane::New(); 
-  plane1->SetNormal(1,0,0);
-  plane1->SetOrigin(bounds[0],0,0);
-  mapper->AddClippingPlane(plane1);
+//  vtkPlane* plane1 =vtkPlane::New(); 
+//  plane1->SetNormal(1,0,0);
+// plane1->SetOrigin(bounds[0],0,0);
+//  mapper->AddClippingPlane(plane1);
+	mapper->CroppingOn();
+	mapper->SetCroppingRegionFlagsToFence();
+	mapper->SetCroppingRegionPlanes(bounds[0],bounds[1]/2,bounds[2],bounds[3]/2,bounds[4],bounds[5]/2);
+	
+
+
+	cout<<"Cropping an?  "<<mapper->GetCropping()<<endl;
+	double* plane = mapper->GetCroppingRegionPlanes();
+	cout<<"CroppingPlanes?  "<<plane[0]<<" "<<plane[1]<<" "<<plane[2]<<" "<<plane[3]<<" "<<plane[4]<<" "<<plane[5]<<" "<<endl;
+	cout<<"CroppingFlags?  "<<mapper->GetCroppingRegionFlags()<<endl;
 
   renderer->SetBackground(0.1, 0.2, 0.4);
   renderer->ResetCamera();
@@ -277,7 +287,7 @@ void renderImage(char* image, char *activity){
   c1Rep->GetPoint2Coordinate()->SetValue(0.6, .1);
 
   vtkSliderCallback* c1Callback = new vtkSliderCallback();
-  c1Callback->Plane1 = plane1;
+  c1Callback->mapper = mapper;
   c1Callback->option = 4;
 
   vtkSmartPointer<vtkSliderWidget> c1SliderWidget = vtkSmartPointer<vtkSliderWidget>::New();
