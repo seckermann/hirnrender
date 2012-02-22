@@ -9,6 +9,7 @@ class RenderWidget : public QVTKWidget{
 	private:
 		double* cropping;
 		vtkRenderWindow* renWin;
+		vtkRenderer* renderer;
 		vtkFixedPointVolumeRayCastMapper* mapper;
 		vtkRenderWindow* renderImage(char* image, char *activity);
 	public:
@@ -23,6 +24,9 @@ class RenderWidget : public QVTKWidget{
 		void setCameraLeft();
 		void setCameraTop();
 		void setCropping();
+		void setCroppingX(double* x);
+		void setCroppingY(double* y);
+		void setCroppingZ(double* z);
 
 };
 #endif

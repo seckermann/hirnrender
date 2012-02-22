@@ -62,7 +62,8 @@ vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){
 	double* bounds= iad->getBounds();
 	this->cropping = iad->getBounds();
 
-	vtkRenderer* renderer = vtkRenderer::New();
+	this->renderer = vtkRenderer::New();
+	
 	vtkVolumeProperty *propertyBrain;
 	vtkFixedPointVolumeRayCastMapper* mapper;
 	vtkColorTransferFunction* colorFun1;  
@@ -132,7 +133,7 @@ vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){
 	mapper->CroppingOn();
 	mapper->SetCroppingRegionFlagsToFence();
 	this->mapper = mapper;
-	SetCropping();
+	setCropping();
 
 
 
@@ -150,12 +151,14 @@ vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){
 
 void RenderWidget::setCameraRight(){
 	const double rechts[] = {-600,99.5,0};
+	renderer->ResetCamera();
 	cam->SetPosition(rechts);
 	cam->SetRoll(-90);
 	this->update();
 }
 void RenderWidget::setCameraFront(){
 	const double vorn[] = {79.5,-600,0};
+	renderer->ResetCamera();
 	cam->SetPosition(vorn);
 	this->update();
 }
@@ -163,6 +166,7 @@ void RenderWidget::setCameraFront(){
 
 void RenderWidget::setCameraBack(){
 	const double hinten[] = {79.5,600,0};
+	renderer->ResetCamera();
 	cam->SetPosition(hinten);
 	cam->SetRoll(180);
 	this->update();
@@ -170,12 +174,14 @@ void RenderWidget::setCameraBack(){
 
 void RenderWidget::setCameraTop(){
 	const double oben[] = {79.5,99.5,-659.58};
+	renderer->ResetCamera();
 	cam->SetPosition(oben);
 	this->update();
 }
 
 void RenderWidget::setCameraLeft(){
 	const double links[] = {600,99.5,0};
+	renderer->ResetCamera();
 	  cam->SetPosition(links);
 	  cam->SetRoll(90);
 	this->update();
@@ -184,10 +190,28 @@ void RenderWidget::setCameraLeft(){
 
 void RenderWidget::setCameraBottom(){
 	const double unten[] = {79.5,99.5,659.58};
+	renderer->ResetCamera();
 	cam->SetPosition(unten);
 	cam->SetRoll(180);
 	this->update();
 }
 void RenderWidget::setCropping(){
-	mapper->SetCropp
+	mapper->SetCroppingRegionPlanes(cropping);
+	this->update();
+}
+
+void RenderWidget::setCroppingX(double* x){
+	this->cropping[0]=x[0];
+	this->cropping[1]=x[1];
+	this->setCropping();
+}
+void RenderWidget::setCroppingY(double* y){
+	this->cropping[2]=y[0];
+	this->cropping[3]=y[1];
+	setCropping();
+}
+void RenderWidget::setCroppingZ(double* z){
+	this->cropping[4]=z[0];
+	this->cropping[5]=z[1];
+	setCropping();
 }

@@ -16,11 +16,11 @@ class Volume : public vtkImageAppendComponents{
     isis::data::Image* activity;
     double* bounds;
     double* range;
-    void setImageData(isis::data::Image* image );
   public:
     Volume(isis::data::Image* image, isis::data::Image* activity=NULL);
     double* getBounds();
     double* getRange();
     bool hasActivity();
+	~Volume();
 };
 #endif

@@ -16,13 +16,31 @@ RenderWidget	renderWidget.h	/^class RenderWidget : public QVTKWidget{$/;"	c	inhe
 RenderWidget::RenderWidget	renderWidget.cpp	/^RenderWidget::RenderWidget(char* image, char *activity){$/;"	f	class:RenderWidget	signature:(char* image, char *activity)
 RenderWidget::RenderWidget	renderWidget.h	/^		RenderWidget(char* image, char *activity);$/;"	p	class:RenderWidget	access:public	signature:(char* image, char *activity)
 RenderWidget::cam	renderWidget.h	/^		vtkCamera* cam;$/;"	m	class:RenderWidget	access:public
+RenderWidget::cropping	renderWidget.h	/^		double* cropping;$/;"	m	class:RenderWidget	access:private
+RenderWidget::mapper	renderWidget.h	/^		vtkFixedPointVolumeRayCastMapper* mapper;$/;"	m	class:RenderWidget	access:private
 RenderWidget::renWin	renderWidget.h	/^		vtkRenderWindow* renWin;$/;"	m	class:RenderWidget	access:private
 RenderWidget::renderImage	renderWidget.cpp	/^vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){$/;"	f	class:RenderWidget	signature:(char* image, char *activity)
 RenderWidget::renderImage	renderWidget.h	/^		vtkRenderWindow* renderImage(char* image, char *activity);$/;"	p	class:RenderWidget	access:private	signature:(char* image, char *activity)
 RenderWidget::setCameraBack	renderWidget.cpp	/^void RenderWidget::setCameraBack(){$/;"	f	class:RenderWidget	signature:()
 RenderWidget::setCameraBack	renderWidget.h	/^		void setCameraBack();$/;"	p	class:RenderWidget	access:public	signature:()
+RenderWidget::setCameraBottom	renderWidget.cpp	/^void RenderWidget::setCameraBottom(){$/;"	f	class:RenderWidget	signature:()
+RenderWidget::setCameraBottom	renderWidget.h	/^		void setCameraBottom();$/;"	p	class:RenderWidget	access:public	signature:()
 RenderWidget::setCameraFront	renderWidget.cpp	/^void RenderWidget::setCameraFront(){$/;"	f	class:RenderWidget	signature:()
 RenderWidget::setCameraFront	renderWidget.h	/^		void setCameraFront();$/;"	p	class:RenderWidget	access:public	signature:()
+RenderWidget::setCameraLeft	renderWidget.cpp	/^void RenderWidget::setCameraLeft(){$/;"	f	class:RenderWidget	signature:()
+RenderWidget::setCameraLeft	renderWidget.h	/^		void setCameraLeft();$/;"	p	class:RenderWidget	access:public	signature:()
+RenderWidget::setCameraRight	renderWidget.cpp	/^void RenderWidget::setCameraRight(){$/;"	f	class:RenderWidget	signature:()
+RenderWidget::setCameraRight	renderWidget.h	/^		void setCameraRight();$/;"	p	class:RenderWidget	access:public	signature:()
+RenderWidget::setCameraTop	renderWidget.cpp	/^void RenderWidget::setCameraTop(){$/;"	f	class:RenderWidget	signature:()
+RenderWidget::setCameraTop	renderWidget.h	/^		void setCameraTop();$/;"	p	class:RenderWidget	access:public	signature:()
+RenderWidget::setCropping	renderWidget.cpp	/^void RenderWidget::setCropping(){$/;"	f	class:RenderWidget	signature:()
+RenderWidget::setCropping	renderWidget.h	/^		void setCropping();$/;"	p	class:RenderWidget	access:public	signature:()
+RenderWidget::setCroppingX	renderWidget.cpp	/^void RenderWidget::setCroppingX(double* x){$/;"	f	class:RenderWidget	signature:(double* x)
+RenderWidget::setCroppingX	renderWidget.h	/^		void setCroppingX(double* x);$/;"	p	class:RenderWidget	access:public	signature:(double* x)
+RenderWidget::setCroppingY	renderWidget.cpp	/^void RenderWidget::setCroppingY(double* y){$/;"	f	class:RenderWidget	signature:(double* y)
+RenderWidget::setCroppingY	renderWidget.h	/^		void setCroppingY(double* y);$/;"	p	class:RenderWidget	access:public	signature:(double* y)
+RenderWidget::setCroppingZ	renderWidget.cpp	/^void RenderWidget::setCroppingZ(double* z){$/;"	f	class:RenderWidget	signature:(double* z)
+RenderWidget::setCroppingZ	renderWidget.h	/^		void setCroppingZ(double* z);$/;"	p	class:RenderWidget	access:public	signature:(double* z)
 Volume	volume.cpp	/^Volume::Volume(isis::data::Image* image, isis::data::Image* activity){$/;"	f	class:Volume	signature:(isis::data::Image* image, isis::data::Image* activity)
 Volume	volume.h	/^    Volume(isis::data::Image* image, isis::data::Image* activity=NULL);$/;"	p	class:Volume	access:public	signature:(isis::data::Image* image, isis::data::Image* activity=NULL)
 Volume	volume.h	/^class Volume : public vtkImageAppendComponents{$/;"	c	inherits:vtkImageAppendComponents
@@ -43,11 +61,10 @@ Volume::hasActivity	volume.h	/^    bool hasActivity();$/;"	p	class:Volume	access
 Volume::id	volume.h	/^    vtkImageData* id;$/;"	m	class:Volume	access:private
 Volume::image	volume.h	/^    isis::data::Image* image;$/;"	m	class:Volume	access:private
 Volume::range	volume.h	/^    double* range;$/;"	m	class:Volume	access:private
-Volume::setImageData	volume.cpp	/^void Volume::setImageData(isis::data::Image* image){$/;"	f	class:Volume	signature:(isis::data::Image* image)
-Volume::setImageData	volume.h	/^    void setImageData(isis::data::Image* image );$/;"	p	class:Volume	access:private	signature:(isis::data::Image* image )
 Volume::size1	volume.h	/^    int size1;$/;"	m	class:Volume	access:private
 Volume::size2	volume.h	/^    int size2;$/;"	m	class:Volume	access:private
 Volume::withActivity	volume.h	/^    bool withActivity;$/;"	m	class:Volume	access:private
+Volume::~Volume	volume.h	/^	~Volume();$/;"	p	class:Volume	access:public	signature:()
 _RENDERWIDGET_H_	renderWidget.h	6;"	d
 _SETCAMERA_H_	setCamera.h	4;"	d
 _VOLUME_H_	volume.h	4;"	d
@@ -58,6 +75,7 @@ blue	vtkSliderCallback.cpp	/^double vtkSliderCallback::blue;$/;"	m	class:vtkSlid
 blue	vtkSliderCallback.h	/^    static double blue;$/;"	m	class:vtkSliderCallback	access:public
 bounds	volume.h	/^    double* bounds;$/;"	m	class:Volume	access:private
 cam	renderWidget.h	/^		vtkCamera* cam;$/;"	m	class:RenderWidget	access:public
+cropping	renderWidget.h	/^		double* cropping;$/;"	m	class:RenderWidget	access:private
 dims	volume.h	/^    int dims[3];$/;"	m	class:Volume	access:private
 dims1	volume.h	/^    int dims1[3];$/;"	m	class:Volume	access:private
 dims2	volume.h	/^    int dims2[3];$/;"	m	class:Volume	access:private
@@ -72,6 +90,7 @@ id	volume.h	/^    vtkImageData* id;$/;"	m	class:Volume	access:private
 image	volume.h	/^    isis::data::Image* image;$/;"	m	class:Volume	access:private
 l	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	e	enum:pos
 main	main.cpp	/^int main(int argc, char **argv) {$/;"	f	signature:(int argc, char **argv)
+mapper	renderWidget.h	/^		vtkFixedPointVolumeRayCastMapper* mapper;$/;"	m	class:RenderWidget	access:private
 mapper	vtkSliderCallback.cpp	/^vtkVolumeMapper* vtkSliderCallback::mapper;$/;"	m	class:vtkSliderCallback	file:
 mapper	vtkSliderCallback.h	/^		static vtkVolumeMapper* mapper;$/;"	m	class:vtkSliderCallback	access:public
 o	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	e	enum:pos
@@ -92,10 +111,24 @@ setCamera	setCamera.cpp	/^void setCamera(vtkCamera* cam, pos position){$/;"	f	si
 setCamera	setCamera.h	/^void setCamera(vtkCamera* cam, enum pos);$/;"	p	signature:(vtkCamera* cam, enum pos)
 setCameraBack	renderWidget.cpp	/^void RenderWidget::setCameraBack(){$/;"	f	class:RenderWidget	signature:()
 setCameraBack	renderWidget.h	/^		void setCameraBack();$/;"	p	class:RenderWidget	access:public	signature:()
+setCameraBottom	renderWidget.cpp	/^void RenderWidget::setCameraBottom(){$/;"	f	class:RenderWidget	signature:()
+setCameraBottom	renderWidget.h	/^		void setCameraBottom();$/;"	p	class:RenderWidget	access:public	signature:()
 setCameraFront	renderWidget.cpp	/^void RenderWidget::setCameraFront(){$/;"	f	class:RenderWidget	signature:()
 setCameraFront	renderWidget.h	/^		void setCameraFront();$/;"	p	class:RenderWidget	access:public	signature:()
-setImageData	volume.cpp	/^void Volume::setImageData(isis::data::Image* image){$/;"	f	class:Volume	signature:(isis::data::Image* image)
-setImageData	volume.h	/^    void setImageData(isis::data::Image* image );$/;"	p	class:Volume	access:private	signature:(isis::data::Image* image )
+setCameraLeft	renderWidget.cpp	/^void RenderWidget::setCameraLeft(){$/;"	f	class:RenderWidget	signature:()
+setCameraLeft	renderWidget.h	/^		void setCameraLeft();$/;"	p	class:RenderWidget	access:public	signature:()
+setCameraRight	renderWidget.cpp	/^void RenderWidget::setCameraRight(){$/;"	f	class:RenderWidget	signature:()
+setCameraRight	renderWidget.h	/^		void setCameraRight();$/;"	p	class:RenderWidget	access:public	signature:()
+setCameraTop	renderWidget.cpp	/^void RenderWidget::setCameraTop(){$/;"	f	class:RenderWidget	signature:()
+setCameraTop	renderWidget.h	/^		void setCameraTop();$/;"	p	class:RenderWidget	access:public	signature:()
+setCropping	renderWidget.cpp	/^void RenderWidget::setCropping(){$/;"	f	class:RenderWidget	signature:()
+setCropping	renderWidget.h	/^		void setCropping();$/;"	p	class:RenderWidget	access:public	signature:()
+setCroppingX	renderWidget.cpp	/^void RenderWidget::setCroppingX(double* x){$/;"	f	class:RenderWidget	signature:(double* x)
+setCroppingX	renderWidget.h	/^		void setCroppingX(double* x);$/;"	p	class:RenderWidget	access:public	signature:(double* x)
+setCroppingY	renderWidget.cpp	/^void RenderWidget::setCroppingY(double* y){$/;"	f	class:RenderWidget	signature:(double* y)
+setCroppingY	renderWidget.h	/^		void setCroppingY(double* y);$/;"	p	class:RenderWidget	access:public	signature:(double* y)
+setCroppingZ	renderWidget.cpp	/^void RenderWidget::setCroppingZ(double* z){$/;"	f	class:RenderWidget	signature:(double* z)
+setCroppingZ	renderWidget.h	/^		void setCroppingZ(double* z);$/;"	p	class:RenderWidget	access:public	signature:(double* z)
 size1	volume.h	/^    int size1;$/;"	m	class:Volume	access:private
 size2	volume.h	/^    int size2;$/;"	m	class:Volume	access:private
 u	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	e	enum:pos
@@ -123,3 +156,4 @@ vtkSliderCallback::red	vtkSliderCallback.h	/^    static double red;$/;"	m	class:
 vtkSliderCallback::vtkSliderCallback	vtkSliderCallback.cpp	/^vtkSliderCallback::vtkSliderCallback(){$/;"	f	class:vtkSliderCallback	signature:()
 vtkSliderCallback::vtkSliderCallback	vtkSliderCallback.h	/^    vtkSliderCallback();$/;"	p	class:vtkSliderCallback	access:public	signature:()
 withActivity	volume.h	/^    bool withActivity;$/;"	m	class:Volume	access:private
+~Volume	volume.h	/^	~Volume();$/;"	p	class:Volume	access:public	signature:()

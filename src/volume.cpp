@@ -106,16 +106,18 @@ Volume::Volume(isis::data::Image* image, isis::data::Image* activity){
     }
     range=ad->GetScalarRange();
     AddInput(ad);
-
+	delete [] mem1;
+	delete [] mem2;
   }
 
-}
-
-void Volume::setImageData(isis::data::Image* image){
-  int counter;
 
 }
 
+Volume::~Volume(){
+	id->Delete();
+	ad->Delete();
+	this->Delete();
+}
 
 bool Volume::hasActivity(){
   return withActivity;
