@@ -33,11 +33,11 @@
 #include "setCamera.h"
 #include "volume.h"
 #include "vtkSliderCallback.h"
+#include <QVTKWidget.h>
 
 using namespace isis;
 
-
-void renderImage(char* image, char *activity);
+vtkRenderWindow* renderImage(char* image, char *activity);
 
 int main(int argc, char **argv) {
 	char * image = NULL;
@@ -72,13 +72,16 @@ int main(int argc, char **argv) {
 			break;
 
 	}
-	renderImage(image, activity); 
+
+	QVTKWidget *widget = new QVTKWidget();
+	widget->SetRenderWindow( renderImage(image, activity) );
+   	widget->show();	
 
 }
 
 
 
-void renderImage(char* image, char *activity){
+vtkRenderWindow* renderImage(char* image, char *activity){
 	Volume* iad = NULL;
 
 	if(activity==NULL){
@@ -318,8 +321,6 @@ void renderImage(char* image, char *activity){
 		blueSliderWidget->AddObserver(vtkCommand::InteractionEvent,blueCallback);
 	}
 	c1SliderWidget->AddObserver(vtkCommand::InteractionEvent,c1Callback);
-
-	iren->Initialize();
-	iren->Start(); 
+	return renWin;
 }
 
