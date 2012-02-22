@@ -42,16 +42,39 @@ int main(int argc, char **argv) {
 	}
 
 	QApplication app(argc, argv);
-	QMainWindow* window = new QMainWindow;
-	window
 
 	RenderWidget *widget = new RenderWidget(image, activity);
 
 
-	QPushButton hello("Ende");
-	QObject::connect( &hello, SIGNAL( clicked() ),
+	QPushButton front("vorn");
+	QObject::connect( &front, SIGNAL( clicked() ),
 			widget, SLOT( setCameraFront() ) );
-	hello.show();
+	front.show();
+
+	QPushButton back("hinten");
+	QObject::connect( &back, SIGNAL( clicked() ),
+			widget, SLOT( setCameraBack() ) );
+	back.show();
+
+	QPushButton right("rechts");
+	QObject::connect( &right, SIGNAL( clicked() ),
+			widget, SLOT( setCameraRight() ) );
+	right.show();
+
+	QPushButton left("links");
+	QObject::connect( &left, SIGNAL( clicked() ),
+			widget, SLOT( setCameraLeft() ) );
+	left.show();
+
+	QPushButton top("oben");
+	QObject::connect( &top, SIGNAL( clicked() ),
+			widget, SLOT( setCameraTop() ) );
+	top.show();
+
+	QPushButton bottom("unten");
+	QObject::connect( &bottom, SIGNAL( clicked() ),
+			widget, SLOT( setCameraBottom() ) );
+	bottom.show();
 
 	widget->show();	
 	return app.exec();

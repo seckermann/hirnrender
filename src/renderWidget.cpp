@@ -60,6 +60,7 @@ vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){
 	}
 
 	double* bounds= iad->getBounds();
+	this->cropping = iad->getBounds();
 
 	vtkRenderer* renderer = vtkRenderer::New();
 	vtkVolumeProperty *propertyBrain;
@@ -130,14 +131,11 @@ vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){
 	//  mapper->AddClippingPlane(plane1);
 	mapper->CroppingOn();
 	mapper->SetCroppingRegionFlagsToFence();
-	mapper->SetCroppingRegionPlanes(bounds[0],bounds[1]/2,bounds[2],bounds[3]/2,bounds[4],bounds[5]/2);
+	this->mapper = mapper;
+	SetCropping();
 
 
 
-	cout<<"Cropping an?  "<<mapper->GetCropping()<<endl;
-	double* plane = mapper->GetCroppingRegionPlanes();
-	cout<<"CroppingPlanes?  "<<plane[0]<<" "<<plane[1]<<" "<<plane[2]<<" "<<plane[3]<<" "<<plane[4]<<" "<<plane[5]<<" "<<endl;
-	cout<<"CroppingFlags?  "<<mapper->GetCroppingRegionFlags()<<endl;
 
 	renderer->SetBackground(0.1, 0.2, 0.4);
 	renderer->ResetCamera();
@@ -150,37 +148,16 @@ vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){
 }
 
 
-void RenderWidget::setCameraFront(){
-	const double unten[] = {79.5,99.5,659.58};
-	const double oben[] = {79.5,99.5,-659.58};
-	const double hinten[] = {79.5,600,0};
-	const double vorn[] = {79.5,-600,0};
-	const double links[] = {600,99.5,0};
+void RenderWidget::setCameraRight(){
 	const double rechts[] = {-600,99.5,0};
-	/*switch(position){
-	  case u:
-	  cam->SetPosition(unten);
-	  cam->SetRoll(180);
-	  break;
-	  case o:
-	  cam->SetPosition(oben);
-	  break;
-	  case l:
-	  cam->SetPosition(links);
-	  cam->SetRoll(90);
-	  break;
-	  case r:
-	  cam->SetPosition(rechts);
-	  cam->SetRoll(-90);
-	  ¿		break;
-	  case v:*/
+	cam->SetPosition(rechts);
+	cam->SetRoll(-90);
+	this->update();
+}
+void RenderWidget::setCameraFront(){
+	const double vorn[] = {79.5,-600,0};
 	cam->SetPosition(vorn);
-	/*		case h:
-			cam->SetPosition(hinten);
-			cam->SetRoll(180);
-			break;
-
-			}*/
+	this->update();
 }
 
 
@@ -188,4 +165,29 @@ void RenderWidget::setCameraBack(){
 	const double hinten[] = {79.5,600,0};
 	cam->SetPosition(hinten);
 	cam->SetRoll(180);
+	this->update();
+}
+
+void RenderWidget::setCameraTop(){
+	const double oben[] = {79.5,99.5,-659.58};
+	cam->SetPosition(oben);
+	this->update();
+}
+
+void RenderWidget::setCameraLeft(){
+	const double links[] = {600,99.5,0};
+	  cam->SetPosition(links);
+	  cam->SetRoll(90);
+	this->update();
+}
+
+
+void RenderWidget::setCameraBottom(){
+	const double unten[] = {79.5,99.5,659.58};
+	cam->SetPosition(unten);
+	cam->SetRoll(180);
+	this->update();
+}
+void RenderWidget::setCropping(){
+	mapper->SetCropp
 }

@@ -1,13 +1,15 @@
 #include <vtkRenderWindow.h>
 #include <vtkCamera.h>
 #include <QVTKWidget.h>
-
+#include <vtkFixedPointVolumeRayCastMapper.h>
 #ifndef _RENDERWIDGET_H_
 #define _RENDERWIDGET_H_
 class RenderWidget : public QVTKWidget{
 	    Q_OBJECT
 	private:
+		double* cropping;
 		vtkRenderWindow* renWin;
+		vtkFixedPointVolumeRayCastMapper* mapper;
 		vtkRenderWindow* renderImage(char* image, char *activity);
 	public:
 		vtkCamera* cam;
@@ -16,7 +18,11 @@ class RenderWidget : public QVTKWidget{
 	public slots:
 		void setCameraFront();
 		void setCameraBack();
-//		virtual void paintEvent( QPaintEvent *);
+		void setCameraBottom();
+		void setCameraRight();
+		void setCameraLeft();
+		void setCameraTop();
+		void setCropping();
 
 };
 #endif
