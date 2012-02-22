@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <QApplication>
 #include <QVTKWidget.h>
-#include "renderImage.h" 
+#include "renderWidget.h" 
+#include <QPushButton>
+
 
 int main(int argc, char **argv) {
 	char * image = NULL;
@@ -39,9 +41,18 @@ int main(int argc, char **argv) {
 	}
 
 	QApplication app(argc, argv);
-	QVTKWidget *widget = new QVTKWidget();
-	widget->SetRenderWindow( renderImage(image, activity) );
+	RenderWidget *widget = new RenderWidget(image, activity);
 
+	/*
+		QPushButton hello("Ende");
+		QObject::connect( &hello, SIGNAL( clicked() ),
+				&widget, SLOT( quit() ) );
+
+
+
+
+
+hello->show();*/
 	widget->show();	
 	return app.exec();
 }

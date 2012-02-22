@@ -1,7 +1,6 @@
 #include<vtkCommand.h>
 #include<vtkPiecewiseFunction.h>
 #include<vtkColorTransferFunction.h>
-#include<vtkPlane.h>
 #include<vtkObject.h>
 #include<vtkVolumeMapper.h>
 
@@ -17,9 +16,6 @@ class vtkSliderCallback : public vtkCommand{
     static vtkPiecewiseFunction* OpacityFun;
     static vtkColorTransferFunction* ColorFun;
 		static vtkVolumeMapper* mapper;
-    //static vtkPlane* Plane1;
-	//static vtkPlane* Plane2;
-	//static vtkPlane* Plane3;
     virtual void Execute(vtkObject *caller, unsigned long, void*);
 
     int option;

@@ -10,8 +10,14 @@ Execute	vtkSliderCallback.cpp	/^void vtkSliderCallback::Execute(vtkObject *calle
 Execute	vtkSliderCallback.h	/^    virtual void Execute(vtkObject *caller, unsigned long, void*);$/;"	p	class:vtkSliderCallback	access:public	signature:(vtkObject *caller, unsigned long, void*)
 OpacityFun	vtkSliderCallback.cpp	/^vtkPiecewiseFunction* vtkSliderCallback::OpacityFun;$/;"	m	class:vtkSliderCallback	file:
 OpacityFun	vtkSliderCallback.h	/^    static vtkPiecewiseFunction* OpacityFun;$/;"	m	class:vtkSliderCallback	access:public
-Plane1	vtkSliderCallback.cpp	/^vtkPlane* vtkSliderCallback::Plane1;$/;"	m	class:vtkSliderCallback	file:
-Plane1	vtkSliderCallback.h	/^    static vtkPlane* Plane1;$/;"	m	class:vtkSliderCallback	access:public
+RenderWidget	renderWidget.cpp	/^RenderWidget::RenderWidget(char* image, char *activity): QVTKWidget(parent){$/;"	f	class:RenderWidget	signature:(char* image, char *activity)
+RenderWidget	renderWidget.h	/^		RenderWidget(char* image, char *activity);$/;"	p	class:RenderWidget	access:public	signature:(char* image, char *activity)
+RenderWidget	renderWidget.h	/^class RenderWidget : public QVTKWidget{$/;"	c	inherits:QVTKWidget
+RenderWidget::RenderWidget	renderWidget.cpp	/^RenderWidget::RenderWidget(char* image, char *activity): QVTKWidget(parent){$/;"	f	class:RenderWidget	signature:(char* image, char *activity)
+RenderWidget::RenderWidget	renderWidget.h	/^		RenderWidget(char* image, char *activity);$/;"	p	class:RenderWidget	access:public	signature:(char* image, char *activity)
+RenderWidget::pushButton_SetOrientation	renderWidget.h	/^		void pushButton_SetOrientation();$/;"	p	class:RenderWidget	access:public	signature:()
+RenderWidget::renderImage	renderWidget.cpp	/^vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){$/;"	f	class:RenderWidget	signature:(char* image, char *activity)
+RenderWidget::renderImage	renderWidget.h	/^		vtkRenderWindow* renderImage(char* image, char *activity);$/;"	p	class:RenderWidget	access:private	signature:(char* image, char *activity)
 Volume	volume.cpp	/^Volume::Volume(isis::data::Image* image, isis::data::Image* activity){$/;"	f	class:Volume	signature:(isis::data::Image* image, isis::data::Image* activity)
 Volume	volume.h	/^    Volume(isis::data::Image* image, isis::data::Image* activity=NULL);$/;"	p	class:Volume	access:public	signature:(isis::data::Image* image, isis::data::Image* activity=NULL)
 Volume	volume.h	/^class Volume : public vtkImageAppendComponents{$/;"	c	inherits:vtkImageAppendComponents
@@ -37,6 +43,8 @@ Volume::setImageData	volume.h	/^    void setImageData(isis::data::Image* image )
 Volume::size1	volume.h	/^    int size1;$/;"	m	class:Volume	access:private
 Volume::size2	volume.h	/^    int size2;$/;"	m	class:Volume	access:private
 Volume::withActivity	volume.h	/^    bool withActivity;$/;"	m	class:Volume	access:private
+_RENDERWIDGET_H_	renderWidget.h	5;"	d
+_SETCAMERA_H_	setCamera.h	4;"	d
 _VOLUME_H_	volume.h	4;"	d
 _VTKSLIDERCALLBACK_H_	vtkSliderCallback.h	8;"	d
 activity	volume.h	/^    isis::data::Image* activity;$/;"	m	class:Volume	access:private
@@ -51,25 +59,37 @@ getBounds	volume.cpp	/^double* Volume::getBounds(){$/;"	f	class:Volume	signature
 getBounds	volume.h	/^    double* getBounds();$/;"	p	class:Volume	access:public	signature:()
 getRange	volume.cpp	/^double* Volume::getRange(){$/;"	f	class:Volume	signature:()
 getRange	volume.h	/^    double* getRange();$/;"	p	class:Volume	access:public	signature:()
+h	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	e	enum:pos
 hasActivity	volume.cpp	/^bool Volume::hasActivity(){$/;"	f	class:Volume	signature:()
 hasActivity	volume.h	/^    bool hasActivity();$/;"	p	class:Volume	access:public	signature:()
 id	volume.h	/^    vtkImageData* id;$/;"	m	class:Volume	access:private
 image	volume.h	/^    isis::data::Image* image;$/;"	m	class:Volume	access:private
-main	renderer.cpp	/^int main(int argc, char **argv) {$/;"	f	signature:(int argc, char **argv)
+l	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	e	enum:pos
+main	main.cpp	/^int main(int argc, char **argv) {$/;"	f	signature:(int argc, char **argv)
+mapper	vtkSliderCallback.cpp	/^vtkVolumeMapper* vtkSliderCallback::mapper;$/;"	m	class:vtkSliderCallback	file:
+mapper	vtkSliderCallback.h	/^		static vtkVolumeMapper* mapper;$/;"	m	class:vtkSliderCallback	access:public
+o	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	e	enum:pos
 opacity	vtkSliderCallback.cpp	/^double vtkSliderCallback::opacity;$/;"	m	class:vtkSliderCallback	file:
 opacity	vtkSliderCallback.h	/^    static double opacity;$/;"	m	class:vtkSliderCallback	access:public
 option	vtkSliderCallback.h	/^    int option;$/;"	m	class:vtkSliderCallback	access:public
+pos	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	g
+pushButton_SetOrientation	renderWidget.h	/^		void pushButton_SetOrientation();$/;"	p	class:RenderWidget	access:public	signature:()
+r	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	e	enum:pos
 range	volume.h	/^    double* range;$/;"	m	class:Volume	access:private
 range	vtkSliderCallback.cpp	/^double* vtkSliderCallback::range;$/;"	m	class:vtkSliderCallback	file:
 range	vtkSliderCallback.h	/^    static double* range;$/;"	m	class:vtkSliderCallback	access:public
 red	vtkSliderCallback.cpp	/^double vtkSliderCallback::red;$/;"	m	class:vtkSliderCallback	file:
 red	vtkSliderCallback.h	/^    static double red;$/;"	m	class:vtkSliderCallback	access:public
-renderImage	renderer.cpp	/^void renderImage(char* image, char *activity);$/;"	p	file:	signature:(char* image, char *activity)
-renderImage	renderer.cpp	/^void renderImage(char* image, char *activity){$/;"	f	signature:(char* image, char *activity)
+renderImage	renderWidget.cpp	/^vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){$/;"	f	class:RenderWidget	signature:(char* image, char *activity)
+renderImage	renderWidget.h	/^		vtkRenderWindow* renderImage(char* image, char *activity);$/;"	p	class:RenderWidget	access:private	signature:(char* image, char *activity)
+setCamera	setCamera.cpp	/^void setCamera(vtkCamera* cam, pos position){$/;"	f	signature:(vtkCamera* cam, pos position)
+setCamera	setCamera.h	/^void setCamera(vtkCamera* cam, enum pos);$/;"	p	signature:(vtkCamera* cam, enum pos)
 setImageData	volume.cpp	/^void Volume::setImageData(isis::data::Image* image){$/;"	f	class:Volume	signature:(isis::data::Image* image)
 setImageData	volume.h	/^    void setImageData(isis::data::Image* image );$/;"	p	class:Volume	access:private	signature:(isis::data::Image* image )
 size1	volume.h	/^    int size1;$/;"	m	class:Volume	access:private
 size2	volume.h	/^    int size2;$/;"	m	class:Volume	access:private
+u	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	e	enum:pos
+v	setCamera.h	/^enum pos {u,o,h,v,r,l};$/;"	e	enum:pos
 vtkSliderCallback	vtkSliderCallback.cpp	/^vtkSliderCallback::vtkSliderCallback(){$/;"	f	class:vtkSliderCallback	signature:()
 vtkSliderCallback	vtkSliderCallback.h	/^    vtkSliderCallback();$/;"	p	class:vtkSliderCallback	access:public	signature:()
 vtkSliderCallback	vtkSliderCallback.h	/^class vtkSliderCallback : public vtkCommand{$/;"	c	inherits:vtkCommand
@@ -79,10 +99,10 @@ vtkSliderCallback::Execute	vtkSliderCallback.cpp	/^void vtkSliderCallback::Execu
 vtkSliderCallback::Execute	vtkSliderCallback.h	/^    virtual void Execute(vtkObject *caller, unsigned long, void*);$/;"	p	class:vtkSliderCallback	access:public	signature:(vtkObject *caller, unsigned long, void*)
 vtkSliderCallback::OpacityFun	vtkSliderCallback.cpp	/^vtkPiecewiseFunction* vtkSliderCallback::OpacityFun;$/;"	m	class:vtkSliderCallback	file:
 vtkSliderCallback::OpacityFun	vtkSliderCallback.h	/^    static vtkPiecewiseFunction* OpacityFun;$/;"	m	class:vtkSliderCallback	access:public
-vtkSliderCallback::Plane1	vtkSliderCallback.cpp	/^vtkPlane* vtkSliderCallback::Plane1;$/;"	m	class:vtkSliderCallback	file:
-vtkSliderCallback::Plane1	vtkSliderCallback.h	/^    static vtkPlane* Plane1;$/;"	m	class:vtkSliderCallback	access:public
 vtkSliderCallback::blue	vtkSliderCallback.cpp	/^double vtkSliderCallback::blue;$/;"	m	class:vtkSliderCallback	file:
 vtkSliderCallback::blue	vtkSliderCallback.h	/^    static double blue;$/;"	m	class:vtkSliderCallback	access:public
+vtkSliderCallback::mapper	vtkSliderCallback.cpp	/^vtkVolumeMapper* vtkSliderCallback::mapper;$/;"	m	class:vtkSliderCallback	file:
+vtkSliderCallback::mapper	vtkSliderCallback.h	/^		static vtkVolumeMapper* mapper;$/;"	m	class:vtkSliderCallback	access:public
 vtkSliderCallback::opacity	vtkSliderCallback.cpp	/^double vtkSliderCallback::opacity;$/;"	m	class:vtkSliderCallback	file:
 vtkSliderCallback::opacity	vtkSliderCallback.h	/^    static double opacity;$/;"	m	class:vtkSliderCallback	access:public
 vtkSliderCallback::option	vtkSliderCallback.h	/^    int option;$/;"	m	class:vtkSliderCallback	access:public
