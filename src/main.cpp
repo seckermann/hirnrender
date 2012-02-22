@@ -5,6 +5,7 @@
 #include <QVTKWidget.h>
 #include "renderWidget.h" 
 #include <QPushButton>
+#include <QMainWindow>
 
 
 int main(int argc, char **argv) {
@@ -41,18 +42,17 @@ int main(int argc, char **argv) {
 	}
 
 	QApplication app(argc, argv);
+	QMainWindow* window = new QMainWindow;
+	window
+
 	RenderWidget *widget = new RenderWidget(image, activity);
 
-	/*
-		QPushButton hello("Ende");
-		QObject::connect( &hello, SIGNAL( clicked() ),
-				&widget, SLOT( quit() ) );
 
+	QPushButton hello("Ende");
+	QObject::connect( &hello, SIGNAL( clicked() ),
+			widget, SLOT( setCameraFront() ) );
+	hello.show();
 
-
-
-
-hello->show();*/
 	widget->show();	
 	return app.exec();
 }
