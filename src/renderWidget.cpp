@@ -33,7 +33,6 @@
 #include <vtkCallbackCommand.h>
 #include <vtkWidgetEventTranslator.h>
 #include <vtkSliderRepresentation3D.h>
-#include "setCamera.h"
 #include "volume.h"
 #include "vtkSliderCallback.h"
 /*
@@ -63,7 +62,7 @@ vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){
 	this->cropping = iad->getBounds();
 
 	this->renderer = vtkRenderer::New();
-	
+
 	vtkVolumeProperty *propertyBrain;
 	vtkFixedPointVolumeRayCastMapper* mapper;
 	vtkColorTransferFunction* colorFun1;  
@@ -151,22 +150,24 @@ vtkRenderWindow* RenderWidget::renderImage(char* image, char *activity){
 
 void RenderWidget::setCameraRight(){
 	const double rechts[] = {-600,99.5,0};
-	renderer->ResetCamera();
+	cam->SetPosition(0,0,0);
 	cam->SetPosition(rechts);
 	cam->SetRoll(-90);
 	this->update();
 }
 void RenderWidget::setCameraFront(){
 	const double vorn[] = {79.5,-600,0};
-	renderer->ResetCamera();
+	cam->SetRoll(0);
+	cam->SetPosition(0,0,0);
 	cam->SetPosition(vorn);
+	cam->SetRoll(0);
 	this->update();
 }
 
 
 void RenderWidget::setCameraBack(){
 	const double hinten[] = {79.5,600,0};
-	renderer->ResetCamera();
+	cam->SetPosition(0,0,0);
 	cam->SetPosition(hinten);
 	cam->SetRoll(180);
 	this->update();
@@ -174,23 +175,27 @@ void RenderWidget::setCameraBack(){
 
 void RenderWidget::setCameraTop(){
 	const double oben[] = {79.5,99.5,-659.58};
-	renderer->ResetCamera();
+	cam->SetPosition(0,0,0);
+	cam->SetRoll(0);
+
 	cam->SetPosition(oben);
+	cam->SetRoll(0);
 	this->update();
 }
 
 void RenderWidget::setCameraLeft(){
 	const double links[] = {600,99.5,0};
-	renderer->ResetCamera();
-	  cam->SetPosition(links);
-	  cam->SetRoll(90);
+	cam->SetPosition(0,0,0);
+	cam->SetRoll(0);
+	cam->SetPosition(links);
+	cam->SetRoll(90);
 	this->update();
 }
 
 
 void RenderWidget::setCameraBottom(){
 	const double unten[] = {79.5,99.5,659.58};
-	renderer->ResetCamera();
+	cam->SetPosition(0,0,0);
 	cam->SetPosition(unten);
 	cam->SetRoll(180);
 	this->update();
